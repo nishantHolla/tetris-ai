@@ -17,6 +17,8 @@
 #define HASH_CPACITY 1000
 
 #define SHAPE_BIT(s,r,c) (s & (1 << (((r)*4)+(c))))
+#define ROTATE_CLOCKWISE(p) ((p.rotation + 1) % NUMBER_OF_ROTATIONS)
+#define ROTATE_ANTI_CLOCKWISE(p) ((p.rotation + NUMBER_OF_ROTATIONS - 1) % NUMBER_OF_ROTATIONS)
 
 // Definitions
 
@@ -38,6 +40,16 @@ typedef enum tet_RotationIndex {
   TET_ROTATION_SOUTH,
   TET_ROTATION_WEST
 } tet_RotationIndex;
+
+typedef enum tet_Move {
+  TET_MOVE_DOWN,
+  TET_MOVE_LEFT,
+  TET_MOVE_RIGHT,
+  TET_MOVE_CLOCKWISE,
+  TET_MOVE_ANTI_CLOCKWISE,
+  TET_MOVE_DROP,
+  TET_MOVE_SWAP
+} tet_Move;
 
 typedef struct tet_Position {
   int8_t x;
@@ -79,6 +91,9 @@ extern const uint16_t TET_PIECE_SHAPE[NUMBER_OF_PIECES][NUMBER_OF_ROTATIONS];
 // Game Functions
 
 int8_t tet_game_init(tet_Game *game);
+bool tet_game_can_move(tet_Game game, const tet_Move move);
+int8_t tet_game_move(tet_Game *game, const tet_Move move);
+bool tet_game_is_valid(const tet_Game *game);
 
 // Hashmap Functions
 
