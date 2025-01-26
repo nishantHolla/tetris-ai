@@ -3,6 +3,11 @@
 // Debug Functions
 
 void tet_debug_print_game(const tet_Game *game, bool be_verbose) {
+  /*
+     Prints the current state of the given game to stdout. Prints additional values if be_verbose
+     flag is set
+  */
+
   const uint16_t shape = TET_PIECE_SHAPE[game->current_piece.index][game->current_piece.rotation];
   const int8_t px = game->position.x;
   const int8_t py = game->position.y;
@@ -37,12 +42,16 @@ void tet_debug_print_game(const tet_Game *game, bool be_verbose) {
     printf("Has held piece: %d\n", game->has_held_piece);
     printf("Has swapped piece: %d\n", game->has_swapped);
     printf("Score: %ld\n", game->score);
+    uchar_t hash[SHA256_DIGEST_LENGTH];
+    tet_hashmap_hash(game, hash);
+    tet_debug_print_hash("Hash: ", hash);
+    printf("Index: %d\n", tet_hashmap_index(hash));
   }
 }
 
 void tet_debug_print_piece(const char *pre_text, const tet_Piece *piece) {
   /*
-     Prints piece name and rotation to stdout
+     Prints piece name and rotation to stdout after printing the given pre_text
   */
 
   if (pre_text) {
@@ -83,5 +92,17 @@ void tet_debug_print_piece(const char *pre_text, const tet_Piece *piece) {
                              break;
   }
 
+  printf("\n");
+}
+
+void tet_debug_print_hash(const char *pre_text, const uchar_t *hash) {
+  /*
+     Prints the given SHA256 hash to stdout after printing the given pre_text
+  */
+
+  printf("%s ", pre_text);
+  for (int32_t i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+    printf("%02x", hash[i]);
+  }
   printf("\n");
 }

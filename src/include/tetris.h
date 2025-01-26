@@ -6,16 +6,21 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <openssl/sha.h>
+#include <string.h>
 
 #define GRID_ROW_COUNT 20
 #define GRID_COL_COUNT 10
 #define NUMBER_OF_PIECES 7
 #define NUMBER_OF_ROTATIONS 4
 #define GRID_EMPTY_CELL 7
+#define HASH_CPACITY 1000
 
 #define SHAPE_BIT(s,r,c) (s & (1 << (((r)*4)+(c))))
 
 // Definitions
+
+typedef unsigned char uchar_t;
 
 typedef enum tet_PieceIndex {
   TET_PIECE_I,
@@ -55,6 +60,17 @@ typedef struct tet_Game {
   int64_t score;
 } tet_Game;
 
+typedef struct tet_HashBucket {
+  uchar_t key[SHA256_DIGEST_LENGTH];
+  double value;
+  struct tet_HashBucket *next;
+} tet_HashBucket;
+
+typedef struct tet_HashMap {
+  tet_HashBucket *buffer[HASH_CPACITY];
+  size_t size;
+} tet_HashMap;
+
 // Game Values
 
 extern const tet_Position START_POSITION;
@@ -63,6 +79,16 @@ extern const uint16_t TET_PIECE_SHAPE[NUMBER_OF_PIECES][NUMBER_OF_ROTATIONS];
 // Game Functions
 
 int8_t tet_game_init(tet_Game *game);
+
+// Hashmap Functions
+
+int8_t tet_hashmap_hash(const tet_Game *game, uchar_t *hash);
+int32_t tet_hashmap_index(const uchar_t *hash);
+int8_t tet_hashmap_init(tet_HashMap *map);
+int8_t tet_hashmap_get(tet_HashMap *map, const tet_Game *game, double *value);
+int8_t tet_hashmap_set(tet_HashMap *map, const tet_Game *game, double value);
+int8_t tet_hashmap_remove(tet_HashMap *map, const tet_Game *game);
+void tet_hashmap_free(tet_HashMap *map);
 
 // Util Functions
 
@@ -73,5 +99,6 @@ int32_t tet_generate_random_int(int32_t min, int32_t max);
 
 void tet_debug_print_game(const tet_Game *game, bool be_verbose);
 void tet_debug_print_piece(const char *pre_text, const tet_Piece *piece);
+void tet_debug_print_hash(const char *pre_text, const uchar_t *hash);
 
 #endif // !TETRIS_H_
