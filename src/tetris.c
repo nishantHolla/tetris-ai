@@ -31,6 +31,7 @@ int8_t tet_game_init(tet_Game *game) {
     }
   }
 
+  game->is_over = false;
   game->position = START_POSITION;
   game->current_piece = tet_generate_random_piece();
   game->next_piece = tet_generate_random_piece();
@@ -127,6 +128,57 @@ int8_t tet_game_move(tet_Game *game, const tet_Move move) {
       break;
     default:
       return 2;
+  }
+
+  return 0;
+}
+
+bool tet_game_can_place(const tet_Game *game) {
+  /*
+     Checks if current_piece can be placed in the current position. Returns true if it can else returns
+     false
+  */
+
+  return tet_game_is_valid(game) && !tet_game_can_move(*game, TET_MOVE_DOWN);
+}
+
+int8_t tet_game_place(tet_Game *game) {
+  /*
+     Places the current_piece of the given game onto the board. Returns 0 if successful else returns
+     non 0 integer
+  */
+
+  if (!tet_game_can_place(game)) {
+    return 1;
+  }
+
+  const uint16_t shape = TET_PIECE_SHAPE[game->current_piece.index][game->current_piece.rotation];
+  const int32_t px = game->position.x;
+  const int32_t py = game->position.y;
+
+  for (int32_t row = 0; row < 4; row++) {
+    for (int32_t col = 0; col < 4; col++) {
+      if (SHAPE_BIT(shape, row, col)) {
+        game->board[py+row][px+col] = game->current_piece.index;
+      }
+    }
+  }
+
+  return 0;
+}
+
+int8_t tet_game_end_turn(tet_Game *game) {
+  /*
+     Performs necessary actions to end a given turn. Returns 0 if successful else return non 0 integer
+  */
+
+  game->current_piece = game->next_piece;
+  game->next_piece = tet_generate_random_piece();
+  game->has_swapped = false;
+  game->position = START_POSITION;
+
+  if (!tet_game_is_valid(game)) {
+    game->is_over = true;
   }
 
   return 0;

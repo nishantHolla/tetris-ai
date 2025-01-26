@@ -62,6 +62,7 @@ typedef struct tet_Piece {
 } tet_Piece;
 
 typedef struct tet_Game {
+  bool is_over;
   int8_t board[GRID_ROW_COUNT][GRID_COL_COUNT];
   tet_Position position;
   tet_Piece current_piece;
@@ -93,6 +94,9 @@ extern const uint16_t TET_PIECE_SHAPE[NUMBER_OF_PIECES][NUMBER_OF_ROTATIONS];
 int8_t tet_game_init(tet_Game *game);
 bool tet_game_can_move(tet_Game game, const tet_Move move);
 int8_t tet_game_move(tet_Game *game, const tet_Move move);
+bool tet_game_can_place(const tet_Game *game);
+int8_t tet_game_place(tet_Game *game);
+int8_t tet_game_end_turn(tet_Game *game);
 bool tet_game_is_valid(const tet_Game *game);
 
 // Hashmap Functions
