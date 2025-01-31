@@ -47,6 +47,13 @@ void tet_debug_print_game(const tet_Game *game, bool be_verbose) {
     tet_debug_print_hash("Hash: ", hash);
     printf("Index: %d\n", tet_hashmap_index(hash));
     printf("Is valid: %d\n", tet_game_is_valid(game));
+    printf("Height: ");
+    for (int32_t col = 0; col < GRID_COL_COUNT; col++) {
+      printf("%d ", game->heights[col]);
+    }
+    printf("\n");
+    printf("Holes: %d\n", game->holes);
+    printf("Bumpiness: %d\n", game->bumpiness);
   }
 }
 

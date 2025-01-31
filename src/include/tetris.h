@@ -71,6 +71,10 @@ typedef struct tet_Game {
   bool has_held_piece;
   bool has_swapped;
   int64_t score;
+  int8_t heights[GRID_COL_COUNT];
+  int32_t bumpiness;
+  int32_t last_lines_cleared;
+  int32_t holes;
 } tet_Game;
 
 typedef struct tet_HashBucket {
@@ -98,6 +102,9 @@ bool tet_game_can_place(const tet_Game *game);
 int8_t tet_game_place(tet_Game *game);
 int8_t tet_game_end_turn(tet_Game *game);
 bool tet_game_is_valid(const tet_Game *game);
+int8_t tet_game_calculate_heights(tet_Game *game);
+int8_t tet_game_calculate_holes(tet_Game *game);
+int8_t tet_game_calculate_bumpiness(tet_Game *game);
 
 // Hashmap Functions
 

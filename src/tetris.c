@@ -164,6 +164,10 @@ int8_t tet_game_place(tet_Game *game) {
     }
   }
 
+  tet_game_calculate_heights(game);
+  tet_game_calculate_holes(game);
+  tet_game_calculate_bumpiness(game);
+
   return 0;
 }
 
@@ -205,4 +209,61 @@ bool tet_game_is_valid(const tet_Game *game) {
   }
 
   return true;
+}
+
+int8_t tet_game_calculate_heights(tet_Game *game) {
+  /*
+     Calculates heights of each column and updates the heights parameter of given game. Returns 0
+     if successful else returns non 0 integer
+  */
+
+  for (int32_t col = 0; col < GRID_COL_COUNT; col++) {
+    int8_t max_height = 0;
+    for (int32_t row = 0; row < GRID_ROW_COUNT; row++) {
+      if (game->board[row][col] != GRID_EMPTY_CELL) {
+        max_height = row+1;
+      }
+    }
+    game->heights[col] = max_height;
+  }
+
+  return 0;
+}
+
+int8_t tet_game_calculate_holes(tet_Game *game) {
+  /*
+     Calculates total holes in the given game and updates the holes parameter of the game struct. Returns
+     0 if successful else returns non 0 integer. This functions assumes that the heights parameter
+     of the given game struct is updated before and has accurate values
+  */
+
+  int32_t hole_count = 0;
+
+  for (int32_t col = 0; col < GRID_COL_COUNT; col++) {
+    for (int32_t row = 0; row < game->heights[col]; row++) {
+      if (game->board[row][col] == GRID_EMPTY_CELL) {
+        hole_count += (col == 0 || col == GRID_COL_COUNT - 1) ? 2 : 1;
+      }
+    }
+  }
+
+  game->holes = hole_count;
+  return 0;
+}
+
+int8_t tet_game_calculate_bumpiness(tet_Game *game) {
+  /*
+     Calculates the bumpiness of the surface of the given game and updates the bumpiness parameter of
+     the game struct. Returns 0 if successful else returns non 0 integer. This function assumes that the
+     heights parameter of the given game struct is updated before and has accurate values
+  */
+
+  int32_t bumpiness = 0;
+
+  for (int32_t col = 0; col < GRID_COL_COUNT - 1; col++) {
+    bumpiness += abs(game->heights[col] - game->heights[col+1]);
+  }
+
+  game->bumpiness = bumpiness;
+  return 0;
 }
