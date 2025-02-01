@@ -3,7 +3,7 @@
 // Game Values
 
 const tet_Position START_POSITION = {
-  .x = GRID_COL_COUNT / 2 - 2,
+  .x = GRID_COL_COUNT / 2 - 1,
   .y = GRID_ROW_COUNT - 4
 };
 

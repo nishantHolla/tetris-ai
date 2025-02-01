@@ -9,6 +9,7 @@
 #include <openssl/sha.h>
 #include <string.h>
 #include <float.h>
+#include "raylib.h"
 
 #define GRID_ROW_COUNT 20
 #define GRID_COL_COUNT 10
@@ -17,6 +18,8 @@
 #define GRID_EMPTY_CELL 7
 #define HASH_CPACITY 1000
 #define MAX_MOVES 100
+#define MAX_FONTS 8
+#define GAME_TITLE "TETRIS"
 
 #define POPULATION_SIZE 100
 #define GENERATION_COUNT 10
@@ -31,6 +34,7 @@
 #define ROTATE_CLOCKWISE(p) ((p.rotation + 1) % NUMBER_OF_ROTATIONS)
 #define ROTATE_ANTI_CLOCKWISE(p) ((p.rotation + NUMBER_OF_ROTATIONS - 1) % NUMBER_OF_ROTATIONS)
 #define WEIGHT(c) (c.magnitude * (c.is_positive ? 1 : -1))
+#define RAYLIB_COLOR(R,G,B,A) { .r = R, .g = G, .b = B, .a = A}
 
 // Definitions
 
@@ -128,6 +132,11 @@ typedef struct tet_HashMap {
   size_t size;
 } tet_HashMap;
 
+typedef struct tet_FontSize {
+  double size;
+  double spacing;
+} tet_FontSize;
+
 // Game Values
 
 extern const tet_Position START_POSITION;
@@ -189,6 +198,41 @@ extern int32_t debug_4lc_count;
 extern int32_t debug_3lc_count;
 extern int32_t debug_2lc_count;
 extern int32_t debug_1lc_count;
+
+// UI Assests
+
+extern const char * TET_UI_FONT_PATH;
+
+// UI Fonts
+
+extern Font fonts[MAX_FONTS];
+extern const tet_FontSize TET_FONT_XL;
+
+// UI Values
+
+extern const double TET_UI_ROUNDEDNESS_SM;
+
+// UI Colors
+
+extern const Color TET_UI_WINDOW_BG_COLOR;
+extern const Color TET_UI_TEXT_COLOR;
+extern const Color TET_UI_EMPTY_CELL_COLOR;
+extern const Color TET_UI_PIECE_COLOR[NUMBER_OF_PIECES];
+
+// UI Elements
+
+extern Vector2 tet_ui_title_text;
+extern Vector2 tet_ui_tetris_board;
+extern Vector2 tet_ui_board_cell;
+extern Vector2 tet_ui_board_spacing;
+
+// UI Functions
+
+void tet_ui_init_fonts();
+void tet_ui_free_fonts();
+void tet_ui_calculate();
+void tet_ui_draw_text();
+void tet_ui_draw_board(const tet_Game *game);
 
 // Debug Functions
 
