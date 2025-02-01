@@ -342,13 +342,16 @@ int8_t tet_game_calculate_bumpiness(tet_Game *game) {
   return 0;
 }
 
-void tet_game_calculate(tet_Game game, tet_HashMap *visited, double *best_evaluation) {
+void tet_game_calculate(tet_Game game, tet_HashMap *visited,
+    double *best_evaluation, tet_PiecePlacement *best_placement, tet_MoveList *best_moves, tet_MoveList *moves) {
   /*
      Evaluates all possible moves of current_piece for the given game
   */
 
   if (!tet_game_is_valid(&game) ||
-      tet_hashmap_get(visited, &game, NULL) == 0) {
+      moves->size == MAX_MOVES ||
+      tet_hashmap_get(visited, &game, NULL) == 0 ||
+      (moves->size > 0 && moves->buffer[moves->size-1] == TET_MOVE_DROP)) {
     return;
   }
 
@@ -358,20 +361,35 @@ void tet_game_calculate(tet_Game game, tet_HashMap *visited, double *best_evalua
     tet_Game copy = game;
     tet_game_place(&copy);
     double eval = tet_game_evaluate(&copy);
-    if (eval > *best_evaluation) {
+    if ((eval > *best_evaluation) ||
+        (eval == *best_evaluation && moves->size < best_moves->size)) {
       *best_evaluation = eval;
+      best_placement->position = game.position;
+      best_placement->rotation = game.current_piece.rotation;
+      *best_moves = *moves;
     }
-    tet_debug_print_game(&copy, true);
+    /*tet_debug_print_game(&copy, true);*/
   }
 
+  tet_Move move_order[] = {
+    TET_MOVE_DROP,
+    TET_MOVE_DOWN,
+    TET_MOVE_LEFT,
+    TET_MOVE_RIGHT,
+    TET_MOVE_CLOCKWISE,
+    TET_MOVE_CLOCKWISE
+  };
+
   for (int32_t i = 0; i < 6; i++) {
-    if (tet_game_can_move(game, i)) {
+    if (tet_game_can_move(game, move_order[i])) {
       tet_Game copy = game;
-      tet_game_move(&copy, i);
+      tet_game_move(&copy, move_order[i]);
       if (i != TET_MOVE_DOWN) {
         tet_game_move(&copy, TET_MOVE_DOWN);
       }
-      tet_game_calculate(copy, visited, best_evaluation);
+      moves->buffer[moves->size++] = move_order[i];
+      tet_game_calculate(copy, visited, best_evaluation, best_placement, best_moves, moves);
+      moves->size--;
     }
   }
 }
@@ -388,4 +406,30 @@ double tet_game_evaluate(const tet_Game *game) {
   evalutation -= game->bumpiness;
 
   return evalutation;
+}
+
+void tet_game_play(tet_Game *game) {
+  /*
+     Play one best move of the given game
+  */
+
+  tet_HashMap map;
+  if (tet_hashmap_init(&map) != 0) {
+    perror("Failed to initialze hashmap.\n");
+    exit(1);
+  }
+
+  tet_MoveList best_moves = { .buffer = {0}, .size = 0 };
+  tet_MoveList moves = { .buffer = {0}, .size = 0 };
+  tet_PiecePlacement best_placement;
+  double best_evaluation = -DBL_MAX;
+
+  tet_game_calculate(*game, &map, &best_evaluation, &best_placement, &best_moves, &moves);
+  game->position = best_placement.position;
+  game->current_piece.rotation = best_placement.rotation;
+
+  tet_game_place(game);
+  tet_game_end_turn(game);
+  tet_debug_print_game(game, true);
+  tet_hashmap_free(&map);
 }

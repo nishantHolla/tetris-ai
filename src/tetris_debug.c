@@ -122,3 +122,33 @@ void tet_debug_print_hash(const char *pre_text, const uchar_t *hash) {
   }
   printf("\n");
 }
+
+void tet_debug_print_movelist(const char *pre_text, const tet_MoveList *list) {
+  /*
+     Prints the given move list to stdout after printing the given pre_text
+  */
+
+  printf("%s ", pre_text);
+  for (size_t i = 0; i < list->size; i++) {
+    switch (list->buffer[i]) {
+      case TET_MOVE_DOWN: printf("TET_MOVE_DOWN");
+                          break;
+      case TET_MOVE_LEFT: printf("TET_MOVE_LEFT");
+                          break;
+      case TET_MOVE_RIGHT: printf("TET_MOVE_RIGHT");
+                          break;
+      case TET_MOVE_CLOCKWISE: printf("TET_MOVE_CLOCKWISE");
+                          break;
+      case TET_MOVE_ANTI_CLOCKWISE: printf("TET_MOVE_ANTI_CLOCKWISE");
+                          break;
+      case TET_MOVE_DROP: printf("TET_MOVE_DROP");
+                          break;
+      case TET_MOVE_SWAP: printf("TET_MOVE_SWAP");
+                          break;
+      default: printf("TET_MOVE_UNKNOWN");
+               break;
+    }
+    printf("\n");
+  }
+  printf("\n");
+}

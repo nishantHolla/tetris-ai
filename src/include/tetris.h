@@ -16,6 +16,7 @@
 #define NUMBER_OF_ROTATIONS 4
 #define GRID_EMPTY_CELL 7
 #define HASH_CPACITY 1000
+#define MAX_MOVES 100
 
 #define SHAPE_BIT(s,r,c) (s & (1 << (((r)*4)+(c))))
 #define ROTATE_CLOCKWISE(p) ((p.rotation + 1) % NUMBER_OF_ROTATIONS)
@@ -57,6 +58,11 @@ typedef struct tet_Position {
   int8_t y;
 } tet_Position;
 
+typedef struct tet_PiecePlacement {
+  tet_Position position;
+  tet_RotationIndex rotation;
+} tet_PiecePlacement;
+
 typedef struct tet_Piece {
   tet_PieceIndex index;
   tet_RotationIndex rotation;
@@ -77,6 +83,11 @@ typedef struct tet_Game {
   int32_t last_lines_cleared;
   int32_t holes;
 } tet_Game;
+
+typedef struct tet_MoveList {
+  tet_Move buffer[MAX_MOVES];
+  size_t size;
+} tet_MoveList;
 
 typedef struct tet_HashBucket {
   uchar_t key[SHA256_DIGEST_LENGTH];
@@ -109,8 +120,10 @@ int8_t tet_game_calculate_score(tet_Game *game);
 int8_t tet_game_calculate_heights(tet_Game *game);
 int8_t tet_game_calculate_holes(tet_Game *game);
 int8_t tet_game_calculate_bumpiness(tet_Game *game);
-void tet_game_calculate(tet_Game game, tet_HashMap *visited, double *best_evaluation);
+void tet_game_calculate(tet_Game game, tet_HashMap *visited,
+    double *best_evaluation, tet_PiecePlacement *best_placement, tet_MoveList *best_moves, tet_MoveList *moves);
 double tet_game_evaluate(const tet_Game *game);
+void tet_game_play(tet_Game *game);
 
 // Hashmap Functions
 
@@ -133,9 +146,9 @@ extern int32_t debug_print_count;
 
 // Debug Functions
 
-
 void tet_debug_print_game(const tet_Game *game, bool be_verbose);
 void tet_debug_print_piece(const char *pre_text, const tet_Piece *piece);
 void tet_debug_print_hash(const char *pre_text, const uchar_t *hash);
+void tet_debug_print_movelist(const char *pre_text, const tet_MoveList *list);
 
 #endif // !TETRIS_H_
