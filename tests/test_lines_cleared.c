@@ -1,3 +1,7 @@
+/*
+   Test filled lines clearing logic
+*/
+
 #include "tetris.h"
 
 int main(void) {

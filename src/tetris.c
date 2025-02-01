@@ -164,11 +164,44 @@ int8_t tet_game_place(tet_Game *game) {
     }
   }
 
+  tet_game_calculate_lines_removed(game);
+  tet_game_calculate_score(game);
   tet_game_calculate_heights(game);
   tet_game_calculate_holes(game);
   tet_game_calculate_bumpiness(game);
 
   return 0;
+}
+
+int8_t tet_game_remove_filled_lines(tet_Game *game) {
+  /*
+     Removes filled lines from the given game. Returns the number of lines removed
+  */
+
+  int8_t lines_removed = 0;
+
+  for (int32_t row = 0; row < GRID_ROW_COUNT; row++) {
+    bool line_is_full = true;
+    for (int32_t col = 0; col < GRID_COL_COUNT; col++) {
+      if (game->board[row][col] == GRID_EMPTY_CELL) {
+        line_is_full = false;
+        break;
+      }
+    }
+
+    if (line_is_full) {
+      lines_removed++;
+      for (int32_t col = 0; col < GRID_COL_COUNT; col++) {
+        for (int32_t i = 0; i < GRID_ROW_COUNT - 1; i++) {
+          game->board[i][col] = game->board[i+1][col];
+        }
+        game->board[GRID_ROW_COUNT-1][col] = GRID_EMPTY_CELL;
+      }
+      row--;
+    }
+  }
+
+  return lines_removed;
 }
 
 int8_t tet_game_end_turn(tet_Game *game) {
@@ -209,6 +242,47 @@ bool tet_game_is_valid(const tet_Game *game) {
   }
 
   return true;
+}
+
+int8_t tet_game_calculate_lines_removed(tet_Game *game) {
+  /*
+     Calculates the number of lines that can be removed and updates the last_lines_cleared parameter
+     of given game. Returns 0 if successful else returns non 0 integer
+  */
+
+  game->last_lines_cleared = tet_game_remove_filled_lines(game);
+  return 0;
+}
+
+int8_t tet_game_calculate_score(tet_Game *game) {
+  /*
+     Calculates the score based on last_lines_cleared of the given game. Assumes that
+     tet_game_calculate_lines_removed has been called before running this function. Returns 0
+     if successful else returns non 0 integer
+  */
+
+  switch (game->last_lines_cleared) {
+    case 4:
+      game->score += 800;
+      break;
+
+    case 3:
+      game->score += 500;
+      break;
+
+    case 2:
+      game->score += 300;
+      break;
+
+    case 1:
+      game->score += 100;
+      break;
+
+    default:
+      return 1;
+  }
+
+  return 0;
 }
 
 int8_t tet_game_calculate_heights(tet_Game *game) {

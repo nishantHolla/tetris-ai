@@ -54,6 +54,7 @@ void tet_debug_print_game(const tet_Game *game, bool be_verbose) {
     printf("\n");
     printf("Holes: %d\n", game->holes);
     printf("Bumpiness: %d\n", game->bumpiness);
+    printf("Last lines cleared: %d\n", game->last_lines_cleared);
   }
 }
 
