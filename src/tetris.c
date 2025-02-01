@@ -17,6 +17,17 @@ const uint16_t TET_PIECE_SHAPE[NUMBER_OF_PIECES][NUMBER_OF_ROTATIONS] = {
   { 0b0010011100000000, 0b0010011000100000, 0b0000011100100000, 0b0010001100100000 }, // TET_PIECE_T
 };
 
+const tet_Coefficient coeff_of_line_clear[5] = {
+  { .magnitude = 0, .is_positive = true },
+  { .magnitude = 1, .is_positive = true },
+  { .magnitude = 1, .is_positive = true },
+  { .magnitude = 1, .is_positive = true },
+  { .magnitude = 1, .is_positive = true  }
+};
+const tet_Coefficient coeff_of_bumpiness = { .magnitude = 1, .is_positive = false };
+const tet_Coefficient coeff_of_holes = { .magnitude = 1, .is_positive = false };
+const tet_Coefficient coeff_of_height = { .magnitude = 1, .is_positive = false };
+
 // Game Functions
 
 int8_t tet_game_init(tet_Game *game) {
@@ -401,9 +412,17 @@ double tet_game_evaluate(const tet_Game *game) {
   */
 
   double evalutation = 0;
-  evalutation += game->last_lines_cleared;
-  evalutation -= game->holes;
-  evalutation -= game->bumpiness;
+
+  int32_t max_height = game->heights[0];
+  for (int32_t col = 0; col < GRID_COL_COUNT; col++) {
+    if (game->heights[col] > max_height) {
+      max_height = game->heights[col];
+    }
+  }
+  evalutation += (WEIGHT(coeff_of_height) * max_height);
+  evalutation += (WEIGHT(coeff_of_line_clear[game->last_lines_cleared]));
+  evalutation += (WEIGHT(coeff_of_holes) * game->holes);
+  evalutation += (WEIGHT(coeff_of_bumpiness) * game->bumpiness);
 
   return evalutation;
 }

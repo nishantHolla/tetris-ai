@@ -1,3 +1,7 @@
+/*
+   Test first 100 moves
+*/
+
 #include "tetris.h"
 
 int main(void) {

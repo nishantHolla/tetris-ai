@@ -21,6 +21,7 @@
 #define SHAPE_BIT(s,r,c) (s & (1 << (((r)*4)+(c))))
 #define ROTATE_CLOCKWISE(p) ((p.rotation + 1) % NUMBER_OF_ROTATIONS)
 #define ROTATE_ANTI_CLOCKWISE(p) ((p.rotation + NUMBER_OF_ROTATIONS - 1) % NUMBER_OF_ROTATIONS)
+#define WEIGHT(c) (c.magnitude * (c.is_positive ? 1 : -1))
 
 // Definitions
 
@@ -100,10 +101,19 @@ typedef struct tet_HashMap {
   size_t size;
 } tet_HashMap;
 
+typedef struct tet_Coefficient {
+  double magnitude;
+  bool is_positive;
+} tet_Coefficient;
+
 // Game Values
 
 extern const tet_Position START_POSITION;
 extern const uint16_t TET_PIECE_SHAPE[NUMBER_OF_PIECES][NUMBER_OF_ROTATIONS];
+extern const tet_Coefficient coeff_of_line_clear[5];
+extern const tet_Coefficient coeff_of_bumpiness;
+extern const tet_Coefficient coeff_of_holes;
+extern const tet_Coefficient coeff_of_height;
 
 // Game Functions
 
@@ -143,6 +153,10 @@ int32_t tet_generate_random_int(int32_t min, int32_t max);
 // Debug Values
 
 extern int32_t debug_print_count;
+extern int32_t debug_4lc_count;
+extern int32_t debug_3lc_count;
+extern int32_t debug_2lc_count;
+extern int32_t debug_1lc_count;
 
 // Debug Functions
 

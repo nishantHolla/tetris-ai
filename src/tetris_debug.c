@@ -3,6 +3,10 @@
 // Debug Values
 
 int32_t debug_print_count = 0;
+int32_t debug_4lc_count = 0;
+int32_t debug_3lc_count = 0;
+int32_t debug_2lc_count = 0;
+int32_t debug_1lc_count = 0;
 
 // Debug Functions
 
