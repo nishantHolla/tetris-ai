@@ -50,6 +50,11 @@ int8_t tet_game_init(tet_Game *game) {
   game->has_held_piece = false;
   game->has_swapped = false;
   game->score = 0;
+  game->l4_clear = 0;
+  game->l3_clear = 0;
+  game->l2_clear = 0;
+  game->l1_clear = 0;
+  tet_ai_init_chromosome(&(game->chromosome));
 
   return 0;
 }
@@ -275,18 +280,22 @@ int8_t tet_game_calculate_score(tet_Game *game) {
   switch (game->last_lines_cleared) {
     case 4:
       game->score += 800;
+      game->l4_clear++;
       break;
 
     case 3:
       game->score += 500;
+      game->l3_clear++;
       break;
 
     case 2:
       game->score += 300;
+      game->l2_clear++;
       break;
 
     case 1:
       game->score += 100;
+      game->l1_clear++;
       break;
 
     default:
@@ -419,10 +428,10 @@ double tet_game_evaluate(const tet_Game *game) {
       max_height = game->heights[col];
     }
   }
-  evalutation += (WEIGHT(coeff_of_height) * max_height);
-  evalutation += (WEIGHT(coeff_of_line_clear[game->last_lines_cleared]));
-  evalutation += (WEIGHT(coeff_of_holes) * game->holes);
-  evalutation += (WEIGHT(coeff_of_bumpiness) * game->bumpiness);
+  evalutation += (WEIGHT(game->chromosome.coeff_of_height) * max_height);
+  evalutation += (WEIGHT(game->chromosome.coeff_of_line_clear[game->last_lines_cleared]));
+  evalutation += (WEIGHT(game->chromosome.coeff_of_holes) * game->holes);
+  evalutation += (WEIGHT(game->chromosome.coeff_of_bumpiness) * game->bumpiness);
 
   return evalutation;
 }
@@ -449,6 +458,6 @@ void tet_game_play(tet_Game *game) {
 
   tet_game_place(game);
   tet_game_end_turn(game);
-  tet_debug_print_game(game, true);
+  /*tet_debug_print_game(game, true);*/
   tet_hashmap_free(&map);
 }

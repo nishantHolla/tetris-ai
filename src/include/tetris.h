@@ -18,6 +18,15 @@
 #define HASH_CPACITY 1000
 #define MAX_MOVES 100
 
+#define POPULATION_SIZE 100
+#define GENERATION_COUNT 10
+#define GAMES_PER_CHROMOSOMES 10
+#define MOVES_PER_GAME 1000
+#define ELITISM_RATE 0.2
+#define MUTATION_RATE 0.4
+#define MAX_COEFFICIENT_MAGNITUDE 1000
+#define MAX_MUTATION 40
+
 #define SHAPE_BIT(s,r,c) (s & (1 << (((r)*4)+(c))))
 #define ROTATE_CLOCKWISE(p) ((p.rotation + 1) % NUMBER_OF_ROTATIONS)
 #define ROTATE_ANTI_CLOCKWISE(p) ((p.rotation + NUMBER_OF_ROTATIONS - 1) % NUMBER_OF_ROTATIONS)
@@ -54,6 +63,19 @@ typedef enum tet_Move {
   TET_MOVE_SWAP
 } tet_Move;
 
+typedef struct tet_Coefficient {
+  double magnitude;
+  bool is_positive;
+} tet_Coefficient;
+
+typedef struct tet_Chromosome {
+  tet_Coefficient coeff_of_line_clear[5];
+  tet_Coefficient coeff_of_bumpiness;
+  tet_Coefficient coeff_of_holes;
+  tet_Coefficient coeff_of_height;
+  int64_t fitness;
+} tet_Chromosome;
+
 typedef struct tet_Position {
   int8_t x;
   int8_t y;
@@ -83,6 +105,11 @@ typedef struct tet_Game {
   int32_t bumpiness;
   int32_t last_lines_cleared;
   int32_t holes;
+  int64_t l4_clear;
+  int64_t l3_clear;
+  int64_t l2_clear;
+  int64_t l1_clear;
+  tet_Chromosome chromosome;
 } tet_Game;
 
 typedef struct tet_MoveList {
@@ -100,11 +127,6 @@ typedef struct tet_HashMap {
   tet_HashBucket *buffer[HASH_CPACITY];
   size_t size;
 } tet_HashMap;
-
-typedef struct tet_Coefficient {
-  double magnitude;
-  bool is_positive;
-} tet_Coefficient;
 
 // Game Values
 
@@ -135,6 +157,15 @@ void tet_game_calculate(tet_Game game, tet_HashMap *visited,
 double tet_game_evaluate(const tet_Game *game);
 void tet_game_play(tet_Game *game);
 
+// AI Functions
+
+int8_t tet_ai_init_population(tet_Chromosome population[POPULATION_SIZE]);
+int8_t tet_ai_init_chromosome(tet_Chromosome *chromosome);
+int8_t tet_ai_train();
+int8_t tet_ai_calculate_fitness(tet_Chromosome *chromosome);
+int8_t tet_ai_select_and_crossover(tet_Chromosome population[POPULATION_SIZE]);
+int8_t tet_ai_mutate(tet_Chromosome population[POPULATION_SIZE]);
+
 // Hashmap Functions
 
 int8_t tet_hashmap_hash(const tet_Game *game, uchar_t *hash);
@@ -149,6 +180,7 @@ void tet_hashmap_free(tet_HashMap *map);
 
 tet_Piece tet_generate_random_piece();
 int32_t tet_generate_random_int(int32_t min, int32_t max);
+double tet_generate_random_double(double min, double max);
 
 // Debug Values
 

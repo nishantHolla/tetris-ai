@@ -16,5 +16,13 @@ int32_t tet_generate_random_int(int32_t min, int32_t max) {
      Generates a random integer between given min(inclusive) and max(exclusive) and returns it
   */
 
-  return ((rand() % max) + min);
+  return rand() % (max - min) + min;
+}
+
+double tet_generate_random_double(double min, double max) {
+  /*
+     Generates a random double between given min(inclusive) and max(exclusive) and returns it
+  */
+
+  return min + (rand() / (double)RAND_MAX) * (max - min);
 }
