@@ -341,3 +341,51 @@ int8_t tet_game_calculate_bumpiness(tet_Game *game) {
   game->bumpiness = bumpiness;
   return 0;
 }
+
+void tet_game_calculate(tet_Game game, tet_HashMap *visited, double *best_evaluation) {
+  /*
+     Evaluates all possible moves of current_piece for the given game
+  */
+
+  if (!tet_game_is_valid(&game) ||
+      tet_hashmap_get(visited, &game, NULL) == 0) {
+    return;
+  }
+
+  tet_hashmap_set(visited, &game, 1);
+
+  if (tet_game_can_place(&game)) {
+    tet_Game copy = game;
+    tet_game_place(&copy);
+    double eval = tet_game_evaluate(&copy);
+    if (eval > *best_evaluation) {
+      *best_evaluation = eval;
+    }
+    tet_debug_print_game(&copy, true);
+  }
+
+  for (int32_t i = 0; i < 6; i++) {
+    if (tet_game_can_move(game, i)) {
+      tet_Game copy = game;
+      tet_game_move(&copy, i);
+      if (i != TET_MOVE_DOWN) {
+        tet_game_move(&copy, TET_MOVE_DOWN);
+      }
+      tet_game_calculate(copy, visited, best_evaluation);
+    }
+  }
+}
+
+double tet_game_evaluate(const tet_Game *game) {
+  /*
+     Evaluates the given game and returns its score based on all of the board parameters. Assumes
+     that the board parameters of the given game are up to date
+  */
+
+  double evalutation = 0;
+  evalutation += game->last_lines_cleared;
+  evalutation -= game->holes;
+  evalutation -= game->bumpiness;
+
+  return evalutation;
+}

@@ -1,3 +1,7 @@
+/*
+   Test 2nd move generation
+*/
+
 #include "tetris.h"
 
 int main(void) {

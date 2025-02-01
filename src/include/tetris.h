@@ -8,6 +8,7 @@
 #include <time.h>
 #include <openssl/sha.h>
 #include <string.h>
+#include <float.h>
 
 #define GRID_ROW_COUNT 20
 #define GRID_COL_COUNT 10
@@ -108,6 +109,8 @@ int8_t tet_game_calculate_score(tet_Game *game);
 int8_t tet_game_calculate_heights(tet_Game *game);
 int8_t tet_game_calculate_holes(tet_Game *game);
 int8_t tet_game_calculate_bumpiness(tet_Game *game);
+void tet_game_calculate(tet_Game game, tet_HashMap *visited, double *best_evaluation);
+double tet_game_evaluate(const tet_Game *game);
 
 // Hashmap Functions
 
@@ -124,7 +127,12 @@ void tet_hashmap_free(tet_HashMap *map);
 tet_Piece tet_generate_random_piece();
 int32_t tet_generate_random_int(int32_t min, int32_t max);
 
-// Debug functions
+// Debug Values
+
+extern int32_t debug_print_count;
+
+// Debug Functions
+
 
 void tet_debug_print_game(const tet_Game *game, bool be_verbose);
 void tet_debug_print_piece(const char *pre_text, const tet_Piece *piece);

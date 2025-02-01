@@ -1,5 +1,9 @@
 #include "tetris.h"
 
+// Debug Values
+
+int32_t debug_print_count = 0;
+
 // Debug Functions
 
 void tet_debug_print_game(const tet_Game *game, bool be_verbose) {
@@ -8,6 +12,7 @@ void tet_debug_print_game(const tet_Game *game, bool be_verbose) {
      flag is set
   */
 
+  debug_print_count++;
   const uint16_t shape = TET_PIECE_SHAPE[game->current_piece.index][game->current_piece.rotation];
   const int8_t px = game->position.x;
   const int8_t py = game->position.y;
@@ -55,6 +60,8 @@ void tet_debug_print_game(const tet_Game *game, bool be_verbose) {
     printf("Holes: %d\n", game->holes);
     printf("Bumpiness: %d\n", game->bumpiness);
     printf("Last lines cleared: %d\n", game->last_lines_cleared);
+    printf("Evaluation: %.2f\n", tet_game_evaluate(game));
+    printf("Debug print count: %d\n", debug_print_count);
   }
 }
 
