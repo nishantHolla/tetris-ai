@@ -86,4 +86,4 @@ This process is continued many times in the name of `generations` to approximate
 to the problem<br />
 <br />
 <br />
-![Genetic algorithm flow chart](./docs/flow-chart-genetic-algorithm.png)
+![Genetic algorithm flow chart](./docs/genetic-algorithm-flowchart.png)
