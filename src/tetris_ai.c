@@ -137,11 +137,10 @@ int8_t tet_ai_calculate_fitness(tet_Chromosome *chromosome, const tet_TrainParam
     tet_Game game;
     tet_HashMap visited;
 
-    if (tet_game_init(&game) != 0) {
+    if (tet_game_init(&game, chromosome) != 0) {
       printf("Failed to initialize game\n");
       return 1;
     }
-    game.chromosome = *chromosome;
 
     if (tet_hashmap_init(&visited) != 0) {
       printf("Failed to initialize hashmap\n");

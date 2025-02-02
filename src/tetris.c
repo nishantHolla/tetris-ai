@@ -3,6 +3,7 @@
 // Game Values
 
 bool AI_IS_PLAYING = 1;
+bool AI_IS_TRAINING = 0;
 
 const tet_Position START_POSITION = {
   .x = GRID_COL_COUNT / 2 - 1,
@@ -30,9 +31,22 @@ const tet_Coefficient coeff_of_bumpiness = { .magnitude = 1, .is_positive = fals
 const tet_Coefficient coeff_of_holes = { .magnitude = 1, .is_positive = false };
 const tet_Coefficient coeff_of_height = { .magnitude = 1, .is_positive = false };
 
+const tet_Chromosome tet_default_chromosome = (tet_Chromosome) {
+  .coeff_of_line_clear = {
+    { .magnitude = 485.460061, .is_positive = false},
+    { .magnitude = 793.878512, .is_positive = false },
+    { .magnitude = 762.678770, .is_positive = false },
+    { .magnitude = 47.741757, .is_positive = true },
+    { .magnitude = 356.161961, .is_positive = true  }
+  },
+  .coeff_of_holes = { .magnitude = 142.888781, .is_positive = false },
+  .coeff_of_height = { .magnitude = 999.241182, .is_positive = false },
+  .coeff_of_bumpiness = { .magnitude = 51.685152, .is_positive = false },
+};
+
 // Game Functions
 
-int8_t tet_game_init(tet_Game *game) {
+int8_t tet_game_init(tet_Game *game, const tet_Chromosome *chromosome) {
   /*
      Initializes the given game struct. Returns 0 on successful initialization else returns non 0
      integer
@@ -56,7 +70,7 @@ int8_t tet_game_init(tet_Game *game) {
   game->l3_clear = 0;
   game->l2_clear = 0;
   game->l1_clear = 0;
-  tet_ai_init_chromosome(&(game->chromosome));
+  game->chromosome = chromosome ? *chromosome : tet_default_chromosome;
 
   return 0;
 }

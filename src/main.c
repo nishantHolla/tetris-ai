@@ -1,28 +1,62 @@
 #include "tetris.h"
 
-int main(void) {
-  srand(time(NULL));
+int main(int argc, char *argv[]) {
 
-  tet_TrainParameters param = (tet_TrainParameters) {
-    .generation_count = 10,
-    .population_size = 100,
-    .games_per_chromosome = 10,
-    .moves_per_game = 1000,
-    .elitsm_rate = 0.2,
-    .mutation_rate = 0.4
+  // Parse arguments
+
+  const char* short_options = "nth";
+  static struct option long_options[] = {
+    {"no-ai", no_argument, 0, 'n'},
+    {"train", no_argument, 0, 't'},
+    {"help", no_argument, 0, 'h'},
+    {0, 0, 0, 0}
   };
-  tet_ai_train(param);
-  return 0;
+
+  int option_index = 0;
+  int c;
+  while ((c = getopt_long(argc, argv, short_options,
+          long_options, &option_index)) != -1) {
+    switch (c) {
+      case 'n':
+        AI_IS_PLAYING = 0;
+        break;
+      case 't':
+        AI_IS_TRAINING = 1;
+        break;
+      case 'h':
+        printf("%s", HELP_TEXT);
+        return 0;
+      case '?':
+        break;
+      default:
+        abort();
+    }
+  }
+
+
+  if (AI_IS_TRAINING) {
+    tet_TrainParameters param = (tet_TrainParameters) {
+      .generation_count = 10,
+      .population_size = 100,
+      .games_per_chromosome = 10,
+      .moves_per_game = 1000,
+      .elitsm_rate = 0.2,
+      .mutation_rate = 0.4
+    };
+    tet_ai_train(param);
+    return 0;
+  }
 
   // Init game
 
+  srand(time(NULL));
   SetConfigFlags(FLAG_FULLSCREEN_MODE);
   InitWindow(GetScreenWidth(), GetScreenHeight(), "Tetris AI");
   SetTargetFPS(60);
 
   tet_ui_init_fonts();
   tet_Game game;
-  if (tet_game_init(&game) != 0) {
+  if (tet_game_init(&game, NULL) != 0) {
     perror("Failed to initialize game.\n");
     exit(1);
   }
@@ -71,7 +105,7 @@ int main(void) {
 
     if (game.is_over) {
       if (IsKeyPressed(KEY_R)) {
-        tet_game_init(&game);
+        tet_game_init(&game, NULL);
         continue;
       }
     }

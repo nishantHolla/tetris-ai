@@ -9,6 +9,7 @@
 #include <openssl/sha.h>
 #include <string.h>
 #include <float.h>
+#include <getopt.h>
 #include "raylib.h"
 
 #define GRID_ROW_COUNT 20
@@ -30,6 +31,38 @@
     DOWN: Rotate piece clockwise\n\
     F: Swap with held piece\n\
     R: Restart game"
+#define HELP_TEXT "Help:\n\n\
+USAGE:\n\
+======\n\
+\n\
+./tetris <options>\n\
+    --no-ai -n: Play the game yourself without the AI\n\
+    --train -t: Train the AI with custom train parameters\n\
+    --help  -h: Print help message and exit\n\
+\n\
+TRAINING:\n\
+=========\n\
+\n\
+To train the AI create a file called tetris-ai-train-params.txt in the directory of the executable\n\
+with the following numbers in the first line separated by spaces\n\
+    generation_count (positive integer): Number of generations to train\n\
+    population_size (positive intenger): Size of the population to train\n\
+    games_per_chromosome (positive integer): Number of games to play for each chromosome in the population\n\
+    moves_per_game (positive integer): Maximum number of moves each game should be played for\n\
+    elitism_rate (decimal between 0 and 1): Percentage of the population to be carried over to the next generation\n\
+    mutation_rate (deciaml between 0 and 1): Percentage of population to be mutated in each generation\n\
+\n\
+After the training is complete, two new files called tetris-ai-train-<timestamp>.log and tetris-ai-params.txt will be\n\
+created:\n\
+    tetris-ai-train-<timestamp>.log file contains the log report of each generation of the training session.\n\
+    tetris-ai-params.txt contains the parameters of the best chromosome after the end of the training session.\n\
+Running the application again with the tetris-ai-params.txt file in the same directory will use those weights in the AI\n\
+Default weights will be used if no such file is found in the current directory of the executable.\n\
+\n\
+Author:\n\
+=======\n\
+\n\
+Nishant Holla (https://github.com/nishantHolla)\n\n"
 
 /*#define POPULATION_SIZE 100*/
 /*#define GENERATION_COUNT 10*/
@@ -159,16 +192,18 @@ typedef struct tet_FontSize {
 // Game Values
 
 extern bool AI_IS_PLAYING;
+extern bool AI_IS_TRAINING;
 extern const tet_Position START_POSITION;
 extern const uint16_t TET_PIECE_SHAPE[NUMBER_OF_PIECES][NUMBER_OF_ROTATIONS];
 extern const tet_Coefficient coeff_of_line_clear[5];
 extern const tet_Coefficient coeff_of_bumpiness;
 extern const tet_Coefficient coeff_of_holes;
 extern const tet_Coefficient coeff_of_height;
+extern const tet_Chromosome tet_default_chromosome;
 
 // Game Functions
 
-int8_t tet_game_init(tet_Game *game);
+int8_t tet_game_init(tet_Game *game, const tet_Chromosome *chromosome);
 bool tet_game_can_move(tet_Game game, const tet_Move move);
 int8_t tet_game_move(tet_Game *game, const tet_Move move);
 bool tet_game_can_place(const tet_Game *game);
