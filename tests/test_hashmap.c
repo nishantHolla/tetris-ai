@@ -8,7 +8,7 @@ int main(void) {
   tet_Game game;
   tet_HashMap map;
 
-  if (tet_game_init(&game) != 0) {
+  if (tet_game_init(&game, &tet_default_chromosome) != 0) {
     perror("Failed to initialize game.\n");
     exit(1);
   }

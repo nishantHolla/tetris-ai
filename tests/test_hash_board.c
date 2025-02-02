@@ -7,7 +7,7 @@
 int main(void) {
   tet_Game game;
 
-  if (tet_game_init(&game) != 0) {
+  if (tet_game_init(&game, &tet_default_chromosome) != 0) {
     perror("Failed to initialize board.\n");
     exit(1);
   }

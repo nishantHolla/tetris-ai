@@ -9,7 +9,7 @@ int main(void) {
   tet_Game game;
   tet_HashMap map;
 
-  if (tet_game_init(&game) != 0) {
+  if (tet_game_init(&game, &tet_default_chromosome) != 0) {
     perror("Failed to initialze game.\n");
     exit(1);
   }
@@ -25,9 +25,13 @@ int main(void) {
   tet_game_place(&game);
   tet_game_end_turn(&game);
 
-  double best_evaluation = -DBL_MAX;
   game.current_piece.index = TET_PIECE_LR;
-  tet_game_calculate(game, &map, &best_evaluation);
+  tet_MoveList best_moves = { .buffer = {0}, .size = 0 };
+  tet_MoveList moves = { .buffer = {0}, .size = 0 };
+  tet_PiecePlacement best_placement;
+  double best_evaluation = -DBL_MAX;
+
+  tet_game_calculate(game, &map, &best_evaluation, &best_placement, &best_moves, &moves);
   printf("Best Evaluation: %.2f\n", best_evaluation);
   tet_hashmap_free(&map);
 

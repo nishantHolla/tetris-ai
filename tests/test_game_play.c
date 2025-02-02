@@ -8,7 +8,7 @@ int main(void) {
   srand(time(NULL));
   tet_Game game;
 
-  if (tet_game_init(&game) != 0) {
+  if (tet_game_init(&game, &tet_default_chromosome) != 0) {
     perror("Failed to initialze game.\n");
     exit(1);
   }
