@@ -8,6 +8,8 @@ const char *TET_UI_FONT_PATH = "assets/romulus.png";
 
 Font fonts[MAX_FONTS] = {0};
 const tet_FontSize TET_FONT_XL = { .size = 5.0f, .spacing = 8.0f };
+const tet_FontSize TET_FONT_LG = { .size = 3.0f, .spacing = 5.0f };
+const tet_FontSize TET_FONT_SM = { .size = 2.5f, .spacing = 3.0f };
 
 // UI Values
 
@@ -34,6 +36,12 @@ Vector2 tet_ui_title_text;
 Vector2 tet_ui_tetris_board;
 Vector2 tet_ui_board_cell = {.x = 44, .y = 44};
 Vector2 tet_ui_board_spacing = { .x = 5, .y = 5};
+Vector2 tet_ui_next_piece_text;
+Vector2 tet_ui_held_piece_text;
+Vector2 tet_ui_next_piece_board;
+Vector2 tet_ui_held_piece_board;
+Vector2 tet_ui_instructions_text;
+Vector2 tet_ui_score_text;
 
 // UI Functions
 
@@ -55,7 +63,7 @@ void tet_ui_free_fonts() {
   }
 }
 
-void tet_ui_calculate() {
+void tet_ui_calculate(const tet_Game *game) {
   /*
      Calculates the posisition and size of all UI elements for the current frame
   */
@@ -71,20 +79,70 @@ void tet_ui_calculate() {
     .x = GetScreenWidth() / 2 - (((tet_ui_board_cell.x + tet_ui_board_spacing.y)*GRID_COL_COUNT)) / 2,
     .y = tet_ui_title_text.y + title_measure.y + 20
   };
+
+  Vector2 next_piece_measure = MeasureTextEx(fonts[0], NEXT_PIECE_TITLE,
+      fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing);
+  tet_ui_next_piece_text = (Vector2) {
+    .x = tet_ui_tetris_board.x - next_piece_measure.x - 20,
+    .y = GetScreenHeight() - (tet_ui_board_cell.y + tet_ui_board_spacing.y) * 4 - next_piece_measure.y - 40
+  };
+
+  Vector2 held_piece_measure = MeasureTextEx(fonts[0], HELD_PIECE_TITLE,
+      fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing);
+  tet_ui_held_piece_text = (Vector2) {
+    .x = tet_ui_tetris_board.x - held_piece_measure.x - 20,
+    .y = tet_ui_next_piece_text.y - (tet_ui_board_cell.y + tet_ui_board_spacing.y) * 4 - next_piece_measure.y - 40
+  };
+
+  tet_ui_next_piece_board = (Vector2) {
+    .x = tet_ui_next_piece_text.x,
+    .y = tet_ui_next_piece_text.y + next_piece_measure.y + 10
+  };
+
+  tet_ui_held_piece_board = (Vector2) {
+    .x = tet_ui_held_piece_text.x,
+    .y = tet_ui_held_piece_text.y + held_piece_measure.y + 10
+  };
+
+  Vector2 instruction_measure = MeasureTextEx(fonts[0], INSTRUCTIONS,
+      fonts[0].baseSize * TET_FONT_SM.size, TET_FONT_SM.spacing);
+  tet_ui_instructions_text = (Vector2) {
+    .x = tet_ui_tetris_board.x + ((tet_ui_board_cell.x + tet_ui_board_spacing.y) * GRID_COL_COUNT) + 10,
+    .y = GetScreenHeight() - instruction_measure.y - 10
+  };
+
+  char score_text[100];
+  snprintf(score_text, 100, "Score: %ld", game->score);
+  Vector2 score_measure = MeasureTextEx(fonts[0], score_text,
+      fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing);
+  tet_ui_score_text = (Vector2) {
+    .x = tet_ui_tetris_board.x - score_measure.x - 10,
+    .y = tet_ui_held_piece_text.y - score_measure.y - 40
+  };
 }
 
-void tet_ui_draw_text() {
+void tet_ui_draw_text(const tet_Game *game) {
   /*
      Draws all required text onto the screen for the current frame
   */
 
   DrawTextEx(fonts[0], GAME_TITLE, tet_ui_title_text,
       fonts[0].baseSize * TET_FONT_XL.size, TET_FONT_XL.spacing, TET_UI_TEXT_COLOR);
+  DrawTextEx(fonts[0], NEXT_PIECE_TITLE, tet_ui_next_piece_text,
+      fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing, TET_UI_TEXT_COLOR);
+  DrawTextEx(fonts[0], HELD_PIECE_TITLE, tet_ui_held_piece_text,
+      fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing, TET_UI_TEXT_COLOR);
+  DrawTextEx(fonts[0], INSTRUCTIONS, tet_ui_instructions_text,
+      fonts[0].baseSize * TET_FONT_SM.size, TET_FONT_SM.spacing, TET_UI_TEXT_COLOR);
+  char score_text[100];
+  snprintf(score_text, 100, "Score: %ld", game->score);
+  DrawTextEx(fonts[0], score_text, tet_ui_score_text,
+      fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing, TET_UI_TEXT_COLOR);
 }
 
 void tet_ui_draw_board(const tet_Game *game) {
   /*
-     Draws the current state of the board onto the screen
+     Draws the current state of the board onto the screen for the current frame
   */
 
   const uint16_t shape = TET_PIECE_SHAPE[game->current_piece.index][game->current_piece.rotation];
@@ -109,6 +167,46 @@ void tet_ui_draw_board(const tet_Game *game) {
         cell_color = TET_UI_PIECE_COLOR[game->current_piece.index];
       }
       DrawRectangleRounded(cell, TET_UI_ROUNDEDNESS_SM, 0, cell_color);
+    }
+  }
+}
+
+void tet_ui_draw_next_and_held_piece(const tet_Game *game) {
+  /*
+     Draws the next piece and held piece onto the screen for the current frame
+  */
+
+  const uint16_t next_shape = TET_PIECE_SHAPE[game->next_piece.index][game->next_piece.rotation];
+
+  for (int32_t row = 3; row > -1; row--) {
+    for (int32_t col = 0; col < 4; col++) {
+      if (SHAPE_BIT(next_shape, row, col)) {
+        Rectangle cell = (Rectangle) {
+          .x = tet_ui_next_piece_board.x + ((tet_ui_board_cell.x + tet_ui_board_spacing.x) * col),
+          .y = tet_ui_next_piece_board.y + ((tet_ui_board_cell.y + tet_ui_board_spacing.y) * (4-row-1)),
+          .width = tet_ui_board_cell.x,
+          .height = tet_ui_board_cell.y
+        };
+        DrawRectangleRounded(cell, TET_UI_ROUNDEDNESS_SM, 0, TET_UI_PIECE_COLOR[game->next_piece.index]);
+      }
+    }
+  }
+
+  if (game->has_held_piece) {
+    const uint16_t held_shape = TET_PIECE_SHAPE[game->held_piece.index][game->held_piece.rotation];
+
+    for (int32_t row = 3; row > -1; row--) {
+      for (int32_t col = 0; col < 4; col++) {
+        if (SHAPE_BIT(held_shape, row, col)) {
+          Rectangle cell = (Rectangle) {
+            .x = tet_ui_held_piece_board.x + ((tet_ui_board_cell.x + tet_ui_board_spacing.x) * col),
+              .y = tet_ui_held_piece_board.y + ((tet_ui_board_cell.y + tet_ui_board_spacing.y) * (4-row-1)),
+              .width = tet_ui_board_cell.x,
+              .height = tet_ui_board_cell.y
+          };
+          DrawRectangleRounded(cell, TET_UI_ROUNDEDNESS_SM, 0, TET_UI_PIECE_COLOR[game->held_piece.index]);
+        }
+      }
     }
   }
 }

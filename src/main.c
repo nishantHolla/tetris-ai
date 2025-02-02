@@ -19,11 +19,32 @@ int main(void) {
   // Game loop
 
   while (!WindowShouldClose()) {
+    if (IsKeyPressed(KEY_LEFT)) {
+      tet_game_move(&game, TET_MOVE_LEFT);
+    }
+    else if (IsKeyPressed(KEY_RIGHT)) {
+      tet_game_move(&game, TET_MOVE_RIGHT);
+    }
+    else if (IsKeyPressed(KEY_UP)) {
+      tet_game_move(&game, TET_MOVE_ANTI_CLOCKWISE);
+    }
+    else if (IsKeyPressed(KEY_DOWN)) {
+      tet_game_move(&game, TET_MOVE_CLOCKWISE);
+    }
+    else if (IsKeyPressed(KEY_SPACE)) {
+      tet_game_move(&game, TET_MOVE_DROP);
+    }
+    else if (IsKeyPressed(KEY_F)) {
+      tet_game_move(&game, TET_MOVE_SWAP);
+    }
     BeginDrawing();
+
     ClearBackground(TET_UI_WINDOW_BG_COLOR);
-    tet_ui_calculate();
-    tet_ui_draw_text();
+    tet_ui_calculate(&game);
+    tet_ui_draw_text(&game);
     tet_ui_draw_board(&game);
+    tet_ui_draw_next_and_held_piece(&game);
+
     EndDrawing();
   }
 

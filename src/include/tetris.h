@@ -20,6 +20,16 @@
 #define MAX_MOVES 100
 #define MAX_FONTS 8
 #define GAME_TITLE "TETRIS"
+#define NEXT_PIECE_TITLE "Next Piece"
+#define HELD_PIECE_TITLE "Held Piece"
+#define INSTRUCTIONS "Keybindings:\n\
+    LEFT: Move piece left\n\
+    RIGHT: Move piece right\n\
+    SPACE: Drop piece\n\
+    UP: Rotate piece anti clockwise\n\
+    DOWN: Rotate piece clockwise\n\
+    F: Swap with held piece\n\
+    R: Restart game"
 
 #define POPULATION_SIZE 100
 #define GENERATION_COUNT 10
@@ -207,6 +217,8 @@ extern const char * TET_UI_FONT_PATH;
 
 extern Font fonts[MAX_FONTS];
 extern const tet_FontSize TET_FONT_XL;
+extern const tet_FontSize TET_FONT_LG;
+extern const tet_FontSize TET_FONT_SM;
 
 // UI Values
 
@@ -225,14 +237,21 @@ extern Vector2 tet_ui_title_text;
 extern Vector2 tet_ui_tetris_board;
 extern Vector2 tet_ui_board_cell;
 extern Vector2 tet_ui_board_spacing;
+extern Vector2 tet_ui_next_piece_text;
+extern Vector2 tet_ui_held_piece_text;
+extern Vector2 tet_ui_next_piece_board;
+extern Vector2 tet_ui_held_piece_board;
+extern Vector2 tet_ui_instructions_text;
+extern Vector2 tet_ui_score_text;
 
 // UI Functions
 
 void tet_ui_init_fonts();
 void tet_ui_free_fonts();
-void tet_ui_calculate();
-void tet_ui_draw_text();
+void tet_ui_calculate(const tet_Game *game);
+void tet_ui_draw_text(const tet_Game *game);
 void tet_ui_draw_board(const tet_Game *game);
+void tet_ui_draw_next_and_held_piece(const tet_Game *game);
 
 // Debug Functions
 
