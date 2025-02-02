@@ -31,7 +31,7 @@ const tet_Coefficient coeff_of_bumpiness = { .magnitude = 1, .is_positive = fals
 const tet_Coefficient coeff_of_holes = { .magnitude = 1, .is_positive = false };
 const tet_Coefficient coeff_of_height = { .magnitude = 1, .is_positive = false };
 
-const tet_Chromosome tet_default_chromosome = (tet_Chromosome) {
+const tet_Chromosome tet_default_chromosome = {
   .coeff_of_line_clear = {
     { .magnitude = 485.460061, .is_positive = false},
     { .magnitude = 793.878512, .is_positive = false },
@@ -70,7 +70,7 @@ int8_t tet_game_init(tet_Game *game, const tet_Chromosome *chromosome) {
   game->l3_clear = 0;
   game->l2_clear = 0;
   game->l1_clear = 0;
-  game->chromosome = chromosome ? *chromosome : tet_default_chromosome;
+  game->chromosome = *chromosome;
 
   return 0;
 }

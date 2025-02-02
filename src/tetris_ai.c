@@ -62,6 +62,8 @@ int8_t tet_ai_train(tet_TrainParameters train_param) {
   const int32_t POPULATION_SIZE = train_param.population_size;
   const int32_t GENERATION_COUNT = train_param.generation_count;
 
+  printf("Training for %d generations with population size of %d\n", GENERATION_COUNT, POPULATION_SIZE);
+
   tet_Chromosome *population = (tet_Chromosome *) malloc(sizeof(tet_Chromosome) * train_param.population_size);
   if (!population) {
     perror("Error: Failed to allocate memory\n");
@@ -118,6 +120,19 @@ int8_t tet_ai_train(tet_TrainParameters train_param) {
     fclose(log_file);
   }
 
+  tet_Chromosome best_chromosome = population[POPULATION_SIZE-1];
+  FILE *params_file = fopen("tetris-ai-params.txt", "w");
+  if (!params_file) {
+    perror("Error: Failed to write parameters to tetris-ai-parms.txt\n");
+    exit(1);
+  }
+  for (int32_t i = 0; i < 5; i++) {
+    fprintf(params_file, "%.8f %d ", best_chromosome.coeff_of_line_clear[i].magnitude, best_chromosome.coeff_of_line_clear[i].is_positive);
+  }
+  fprintf(params_file, "%.8f %d ", best_chromosome.coeff_of_bumpiness.magnitude, best_chromosome.coeff_of_bumpiness.is_positive);
+  fprintf(params_file, "%.8f %d ", best_chromosome.coeff_of_height.magnitude, best_chromosome.coeff_of_height.is_positive);
+  fprintf(params_file, "%.8f %d ", best_chromosome.coeff_of_holes.magnitude, best_chromosome.coeff_of_holes.is_positive);
+  fclose(params_file);
   free(population);
   return 0;
 }
