@@ -7,7 +7,7 @@ Genetic algorithm (GA) is a metaheuristic inspired by the process of natural sel
 
 ## Demo
 
-[![Watch the video](./doc/thumb.jpg)](https://vimeo.com/1052779149?share=copy)
+[![Watch the video](./docs/thumb.jpg)](https://vimeo.com/1052779149?share=copy)
 Click the image to view demo video
 
 ## Building (Linux and MacOS)
@@ -45,7 +45,7 @@ in the directory of the executable with the following numbers separated by space
     - games_per_chromosome (positive integer): Number of games to play for each chromosome in the population
     - moves_per_game (positive integer): Maximum number of moves each game should be played for
     - elitism_rate (decimal between 0 and 1): Percentage of the population to be carried over to the next generation
-    - mutation_rate (deciaml between 0 and 1): Percentage of population to be mutated in each generation
+    - mutation_rate (deciaml between 0 and 1): Percentage of population to be mutated in each generation<br />
 For example
 ```bash
 100 100 10 5000 0.2 0.4
