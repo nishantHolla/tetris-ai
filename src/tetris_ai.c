@@ -2,11 +2,13 @@
 
 // AI Functions
 
-int8_t tet_ai_init_population(tet_Chromosome population[POPULATION_SIZE]) {
+int8_t tet_ai_init_population(tet_Chromosome *population, const tet_TrainParameters *train_param) {
   /*
      Initializes the given population with random chromosomes. Returns 0 if successful else returns
      non 0 integer
   */
+
+  const int32_t POPULATION_SIZE = train_param->population_size;
 
   for (int32_t i = 0; i < POPULATION_SIZE; i++) {
     tet_ai_init_chromosome(&(population[i]));
@@ -51,17 +53,25 @@ int compare(const void *a, const void *b) {
   return ((tet_Chromosome *)a)->fitness - ((tet_Chromosome *)b)->fitness;
 }
 
-int8_t tet_ai_train() {
+int8_t tet_ai_train(tet_TrainParameters train_param) {
   /*
      Run genetic algorithm to determine best coefficients. Returns 0 if successful else returns
      non 0 integer
   */
 
-  tet_Chromosome population[POPULATION_SIZE];
+  const int32_t POPULATION_SIZE = train_param.population_size;
+  const int32_t GENERATION_COUNT = train_param.generation_count;
+
+  tet_Chromosome *population = (tet_Chromosome *) malloc(sizeof(tet_Chromosome) * train_param.population_size);
+  if (!population) {
+    perror("Error: Failed to allocate memory\n");
+    exit(1);
+  }
+
   char log_file_name[100];
   snprintf(log_file_name, 100, "tetris-ai-train-%lu.log", (unsigned long)time(NULL));
 
-  if (tet_ai_init_population(population) != 0) {
+  if (tet_ai_init_population(population, &train_param) != 0) {
     printf("Failed to Initializes population\n");
     return 1;
   }
@@ -79,16 +89,16 @@ int8_t tet_ai_train() {
     for (int32_t i = 0; i < POPULATION_SIZE; i++) {
       printf("\b\b\b%03d", i);
       fflush(stdout);
-      tet_ai_calculate_fitness(&(population[i]));
+      tet_ai_calculate_fitness(&(population[i]), &train_param);
     }
 
-    tet_ai_select_and_crossover(population);
-    tet_ai_mutate(population);
+    tet_ai_select_and_crossover(population, &train_param);
+    tet_ai_mutate(population, &train_param);
 
     tet_Chromosome best_chromosome = population[POPULATION_SIZE-1];
     printf(" Best fitness: %ld\n", best_chromosome.fitness);
     for (int32_t i = 0; i < 5; i++) {
-      fprintf(log_file, "\tcoeff_of_lines_cleared %d: magnitude=%f, is_positive=%d\n", i+1,
+      fprintf(log_file, "\tcoeff_of_lines_cleared %d: magnitude=%f, is_positive=%d\n", i,
           best_chromosome.coeff_of_line_clear[i].magnitude,
           best_chromosome.coeff_of_line_clear[i].is_positive);
     }
@@ -108,19 +118,22 @@ int8_t tet_ai_train() {
     fclose(log_file);
   }
 
+  free(population);
   return 0;
 }
 
-int8_t tet_ai_calculate_fitness(tet_Chromosome *chromosome) {
+int8_t tet_ai_calculate_fitness(tet_Chromosome *chromosome, const tet_TrainParameters *train_param) {
   /*
      Calculates the fitness of the given chromosomes by playing some games with the genes of the
      the chromosome. Fills the fitness value of the given chromosome struct. Returns 0 if successful
      else return non 0 integer
   */
 
+  const int32_t GAMES_PER_CHROMOSOME = train_param->games_per_chromosome;
+  const int32_t MOVES_PER_GAME = train_param->moves_per_game;
   int64_t fitness_sum = 0;
 
-  for (int32_t i = 0; i < GAMES_PER_CHROMOSOMES; i++) {
+  for (int32_t i = 0; i < GAMES_PER_CHROMOSOME; i++) {
     tet_Game game;
     tet_HashMap visited;
 
@@ -153,15 +166,19 @@ int8_t tet_ai_calculate_fitness(tet_Chromosome *chromosome) {
     tet_hashmap_free(&visited);
   }
 
-  chromosome->fitness = (fitness_sum / GAMES_PER_CHROMOSOMES);
+  chromosome->fitness = (fitness_sum / GAMES_PER_CHROMOSOME);
   return 0;
 }
 
-int8_t tet_ai_select_and_crossover(tet_Chromosome population[POPULATION_SIZE]) {
+int8_t tet_ai_select_and_crossover(tet_Chromosome *population, const tet_TrainParameters *train_param) {
   /*
      Performs selection and crossover for the given population based on the set ELITISM_RATE.
      Returns 0 if successful else returns non 0 integer
   */
+
+  const int32_t POPULATION_SIZE = train_param->population_size;
+  const double ELITISM_RATE = train_param->elitsm_rate;
+
 
   qsort(population, POPULATION_SIZE, sizeof(tet_Chromosome), &compare);
   int32_t crossover_end = POPULATION_SIZE - (ELITISM_RATE * POPULATION_SIZE);
@@ -201,10 +218,14 @@ int8_t tet_ai_select_and_crossover(tet_Chromosome population[POPULATION_SIZE]) {
   return 0;
 }
 
-int8_t tet_ai_mutate(tet_Chromosome population[POPULATION_SIZE]) {
+int8_t tet_ai_mutate(tet_Chromosome *population, const tet_TrainParameters *train_param) {
   /*
      Mutates the given population based on MUTATION_RATE. Returns 0 if successful else returns 0
   */
+
+  const int32_t POPULATION_SIZE = train_param->population_size;
+  const double ELITISM_RATE = train_param->elitsm_rate;
+  const double MUTATION_RATE = train_param->mutation_rate;
 
   int32_t mutation_count = POPULATION_SIZE * MUTATION_RATE;
   int32_t crossover_end = POPULATION_SIZE - (ELITISM_RATE * POPULATION_SIZE);

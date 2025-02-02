@@ -3,6 +3,17 @@
 int main(void) {
   srand(time(NULL));
 
+  tet_TrainParameters param = (tet_TrainParameters) {
+    .generation_count = 10,
+    .population_size = 100,
+    .games_per_chromosome = 10,
+    .moves_per_game = 1000,
+    .elitsm_rate = 0.2,
+    .mutation_rate = 0.4
+  };
+  tet_ai_train(param);
+  return 0;
+
   // Init game
 
   SetConfigFlags(FLAG_FULLSCREEN_MODE);

@@ -31,12 +31,12 @@
     F: Swap with held piece\n\
     R: Restart game"
 
-#define POPULATION_SIZE 100
-#define GENERATION_COUNT 10
-#define GAMES_PER_CHROMOSOMES 10
-#define MOVES_PER_GAME 1000
-#define ELITISM_RATE 0.2
-#define MUTATION_RATE 0.4
+/*#define POPULATION_SIZE 100*/
+/*#define GENERATION_COUNT 10*/
+/*#define GAMES_PER_CHROMOSOMES 10*/
+/*#define MOVES_PER_GAME 1000*/
+/*#define ELITISM_RATE 0.2*/
+/*#define MUTATION_RATE 0.4*/
 #define MAX_COEFFICIENT_MAGNITUDE 1000
 #define MAX_MUTATION 40
 
@@ -76,6 +76,15 @@ typedef enum tet_Move {
   TET_MOVE_DROP,
   TET_MOVE_SWAP
 } tet_Move;
+
+typedef struct tet_TrainParameters {
+  int32_t generation_count;
+  int32_t population_size;
+  int32_t games_per_chromosome;
+  int32_t moves_per_game;
+  double elitsm_rate;
+  double mutation_rate;
+} tet_TrainParameters;
 
 typedef struct tet_Coefficient {
   double magnitude;
@@ -179,12 +188,12 @@ void tet_game_play(tet_Game *game);
 
 // AI Functions
 
-int8_t tet_ai_init_population(tet_Chromosome population[POPULATION_SIZE]);
+int8_t tet_ai_init_population(tet_Chromosome *population, const tet_TrainParameters *train_param);
 int8_t tet_ai_init_chromosome(tet_Chromosome *chromosome);
-int8_t tet_ai_train();
-int8_t tet_ai_calculate_fitness(tet_Chromosome *chromosome);
-int8_t tet_ai_select_and_crossover(tet_Chromosome population[POPULATION_SIZE]);
-int8_t tet_ai_mutate(tet_Chromosome population[POPULATION_SIZE]);
+int8_t tet_ai_train(tet_TrainParameters train_param);
+int8_t tet_ai_calculate_fitness(tet_Chromosome *chromosome, const tet_TrainParameters *train_param);
+int8_t tet_ai_select_and_crossover(tet_Chromosome *population, const tet_TrainParameters *train_param);
+int8_t tet_ai_mutate(tet_Chromosome *population, const tet_TrainParameters *train_param);
 
 // Hashmap Functions
 
