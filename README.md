@@ -100,7 +100,7 @@ such as holes in the first and last column as filling them in the upcoming moves
 to holes in any other columns. For this reason holes in the first and last column are counted twice
 to differentiate them from other holes.<br />
 For example, the below board has 4 holes.<br />
-![Holes example](./docs/holes.png)
+![Holes example](./docs/holes-demo.png)
 <br />
 
 ### Bumpiness of the surface
@@ -108,7 +108,7 @@ For example, the below board has 4 holes.<br />
 The bumpiness of the surface of a board is defined as the sum of absolute difference of heights of
 adjacent columns. Bumpiness is bad as it makes placement of upcoming pieces more difficult.<br />
 For example, the below board has a bumpiness of 9.<br />
-![Bumpiness example](./docs/bumpiness.png)
+![Bumpiness example](./docs/bumpiness-demo.png)
 <br />
 
 ### Height
@@ -121,7 +121,7 @@ For example, the below board has a height of 6.
 
 As the goal of the game suggests, a move that clears a line is considered to be better than a move
 that does not clear a line.<br />
-![Heights example](./docs/heights.png)
+![Heights example](./docs/heights-demo.png)
 <br />
 
 ### Score of a move
