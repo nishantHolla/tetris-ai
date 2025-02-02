@@ -15,7 +15,7 @@ Click the image to view demo video
 - Clone the repository
 
 ```bash
-gint clone https://github.com/nishantHolla/tetris-ai
+git clone https://github.com/nishantHolla/tetris-ai
 cd tetris-ai
 ```
 
