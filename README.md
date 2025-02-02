@@ -62,3 +62,25 @@ Run the executable like before to use the new weights
 ```bash
 ./tetris-ai --help
 ```
+
+## About Genetic Algorithm
+
+Genetic algorithm is a nature inspired optimization technique that starts off with a set of  possible
+solutions selected randomly from the entire solution space to a problem called `population`. Each
+solution is called a `chromosome` that has parameters called `genes` that affect the validity of
+the solution to the problem.<br />
+<br />
+Each `chromosome` is tested with its `gene` and a `fitness` value is assigned to it using a defined
+`fitness function`. The `fitness` of the `chromosome` tells how good the solution is to the problem.<br />
+<br />
+`chromosomes` with higher `fitness` are `selected` for the next `generation` and have higher chance
+of producing `offspring` i.e. new `chromosomes` that replace the `chromosomes` with low `fitness`.<br />
+<br/>
+`crossover` is performed between randomly selected `chromosomes` where in the genes of the two `chromosomes`
+are swapped starting from a single (or double) point.<br />
+<br />
+Some of the `chromosomes` are mutated by changing the values of their `genes` to introduce new
+solutions to the population.<br />
+<br />
+This process is continued many times in the name of `generations` to approximate a good solution
+to the problem<br />
