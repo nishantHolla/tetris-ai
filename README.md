@@ -84,3 +84,6 @@ solutions to the population.<br />
 <br />
 This process is continued many times in the name of `generations` to approximate a good solution
 to the problem<br />
+<br />
+<br />
+![Genetic algorithm flow chart](./docs/flow-chart-genetic-algorithm.png)
