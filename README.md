@@ -87,3 +87,41 @@ to the problem<br />
 <br />
 <br />
 ![Genetic algorithm flow chart](./docs/genetic-algorithm-flowchart.png)
+
+## Parameters used
+
+The folowing parameters are calculated by the AI to decide the placement of the piece:
+
+### Number of holes
+
+A hole is defined as an empty cell which has at least one non empty cells above it. Holes are
+considered to be bad as it does not allow lines to be completed easily. Some holes are even worse
+such as holes in the first and last column as filling them in the upcoming moves is even harder compared
+to holes in any other columns. For this reason holes in the first and last column are counted twice
+to differentiate them from other holes.<br />
+For example, the below board has 4 holes.
+![Holes example](./docs/holes.png)
+
+### Bumpiness of the surface
+
+The bumpiness of the surface of a board is defined as the sum of absolute difference of heights of
+adjacent columns. Bumpiness is bad as it makes placement of upcoming pieces more difficult.<br />
+For example, the below board has a bumpiness of 9.
+![Bumpiness example](./docs/bumpiness.png)
+
+### Height
+
+The height of the board is defined as the height of the heights column present in the game. Higher
+height is bad as it makes it difficult to place upcoming pieces.<br />
+For example, the below board has a height of 6.
+
+### Lines cleared
+
+As the goal of the game suggests, a move that clears a line is considered to be better than a move
+that does not clear a line.
+![Heights example](./docs/heights.png)
+
+### Score of a move
+
+The final score of a move is the sum of the above mentioned parameters multiplied by its weight that
+is determined by genetic algorithm. The move with highest score is selected to be played.
