@@ -47,23 +47,52 @@ int main(int argc, char *argv[]) {
     if (train_params) {
       char line[100];
       fgets(line, 100, train_params);
-      sscanf(line, "%d %d %d %d %lf %lf",
+      int32_t inputs_read = sscanf(line, "%d %d %d %d %lf %lf",
           &param.generation_count,
           &param.population_size,
           &param.games_per_chromosome,
           &param.moves_per_game,
           &param.elitsm_rate,
           &param.mutation_rate);
+      if (inputs_read != 6) {
+        perror("Error: Failed to parse train params.\n");
+        fclose(train_params);
+        exit(1);
+      }
       fclose(train_params);
     }
     tet_ai_train(param);
     return 0;
   }
 
-  const tet_Chromosome selected_chromosome = tet_default_chromosome;
+  tet_Chromosome selected_chromosome = tet_default_chromosome;
   if (AI_IS_PLAYING) {
     FILE *params_file = fopen("./tetris-ai-params.txt", "r");
     if (params_file) {
+      char line[500];
+      fgets(line, 500, params_file);
+      int32_t inputs_read = sscanf(line, "%lf %hhd %lf %hhd %lf %hhd %lf %hhd %lf %hhd %lf %hhd %lf %hhd %lf %hhd",
+          &(selected_chromosome.coeff_of_line_clear[0].magnitude),
+          &(selected_chromosome.coeff_of_line_clear[0].is_positive),
+          &(selected_chromosome.coeff_of_line_clear[1].magnitude),
+          &(selected_chromosome.coeff_of_line_clear[1].is_positive),
+          &(selected_chromosome.coeff_of_line_clear[2].magnitude),
+          &(selected_chromosome.coeff_of_line_clear[2].is_positive),
+          &(selected_chromosome.coeff_of_line_clear[3].magnitude),
+          &(selected_chromosome.coeff_of_line_clear[3].is_positive),
+          &(selected_chromosome.coeff_of_line_clear[4].magnitude),
+          &(selected_chromosome.coeff_of_line_clear[4].is_positive),
+          &(selected_chromosome.coeff_of_bumpiness.magnitude),
+          &(selected_chromosome.coeff_of_bumpiness.is_positive),
+          &(selected_chromosome.coeff_of_height.magnitude),
+          &(selected_chromosome.coeff_of_height.is_positive),
+          &(selected_chromosome.coeff_of_holes.magnitude),
+          &(selected_chromosome.coeff_of_holes.is_positive));
+      if (inputs_read != 16) {
+        printf("Error: Failed to parse params file. %d\n%s\n", inputs_read, line);
+        fclose(params_file);
+        exit(1);
+      }
       fclose(params_file);
     }
   }

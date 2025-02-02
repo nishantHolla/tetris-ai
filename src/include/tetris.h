@@ -121,7 +121,7 @@ typedef struct tet_TrainParameters {
 
 typedef struct tet_Coefficient {
   double magnitude;
-  bool is_positive;
+  int8_t is_positive;
 } tet_Coefficient;
 
 typedef struct tet_Chromosome {
