@@ -42,6 +42,7 @@ Vector2 tet_ui_next_piece_board;
 Vector2 tet_ui_held_piece_board;
 Vector2 tet_ui_instructions_text;
 Vector2 tet_ui_score_text;
+Vector2 tet_ui_stats_text;
 
 // UI Functions
 
@@ -119,6 +120,11 @@ void tet_ui_calculate(const tet_Game *game) {
     .x = tet_ui_tetris_board.x - score_measure.x - 10,
     .y = tet_ui_held_piece_text.y - score_measure.y - 40
   };
+
+  tet_ui_stats_text = (Vector2) {
+    .x = tet_ui_tetris_board.x + ((tet_ui_board_cell.x + tet_ui_board_spacing.y) * GRID_COL_COUNT) + 10,
+    .y = tet_ui_tetris_board.y
+  };
 }
 
 void tet_ui_draw_text(const tet_Game *game) {
@@ -138,6 +144,33 @@ void tet_ui_draw_text(const tet_Game *game) {
   snprintf(score_text, 100, "Score: %ld", game->score);
   DrawTextEx(fonts[0], score_text, tet_ui_score_text,
       fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing, TET_UI_TEXT_COLOR);
+
+  char stats[500];
+  tet_ui_print_piece("Current piece:\n", &game->current_piece, stats);
+  tet_ui_print_piece("\nNext piece:\n", &game->next_piece, stats + strlen(stats));
+  if (game->has_held_piece) {
+    tet_ui_print_piece("\nHeld piece:\n", &game->held_piece, stats + strlen(stats));
+  }
+  sprintf(stats + strlen(stats), "\nBoard hash:\n");
+  uchar_t hash[SHA256_DIGEST_LENGTH];
+  tet_hashmap_hash(game, hash);
+  for (int32_t i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+    sprintf(stats + strlen(stats), "%02x", hash[i]);
+  }
+  sprintf(stats + strlen(stats), "\n");
+  sprintf(stats + strlen(stats), "\nHeights:\n");
+  for (int32_t col = 0; col < GRID_COL_COUNT; col++) {
+    sprintf(stats + strlen(stats), "%d ", game->heights[col]);
+  }
+  sprintf(stats + strlen(stats), "\n");
+  sprintf(stats + strlen(stats), "\nBumpiness:\n%d\n", game->bumpiness);
+  sprintf(stats + strlen(stats), "\nHoles:\n%d\n", game->holes);
+  sprintf(stats + strlen(stats), "\nTotal lines cleared:\n%ld\n",
+      game->l1_clear + game->l2_clear + game->l3_clear + game->l4_clear);
+
+
+  DrawTextEx(fonts[0], stats, tet_ui_stats_text,
+      fonts[0].baseSize * TET_FONT_SM.size, TET_FONT_SM.spacing, TET_UI_TEXT_COLOR);
 }
 
 void tet_ui_draw_board(const tet_Game *game) {
@@ -209,4 +242,48 @@ void tet_ui_draw_next_and_held_piece(const tet_Game *game) {
       }
     }
   }
+}
+
+void tet_ui_print_piece(const char *pre_text, const tet_Piece *piece, char *string) {
+  /*
+     Prints the name and rotation of given piece to string after the pre_text
+  */
+
+  string += sprintf(string, "%s", pre_text);
+
+  switch (piece->index) {
+    case TET_PIECE_I: string += sprintf(string, "TET_PIECE_I");
+                      break;
+    case TET_PIECE_L: string += sprintf(string, "TET_PIECE_L");
+                      break;
+    case TET_PIECE_LR: string += sprintf(string, "TET_PIECE_LR");
+                      break;
+    case TET_PIECE_O: string += sprintf(string, "TET_PIECE_O");
+                      break;
+    case TET_PIECE_S: string += sprintf(string, "TET_PIECE_S");
+                      break;
+    case TET_PIECE_SR: string += sprintf(string, "TET_PIECE_SR");
+                      break;
+    case TET_PIECE_T: string += sprintf(string, "TET_PIECE_T");
+                      break;
+    default:          string += sprintf(string, "TET_PIECE_UNKNOWN");
+                      break;
+  }
+
+  string += sprintf(string, " ");
+
+  switch (piece->rotation) {
+    case TET_ROTATION_NORTH: string += sprintf(string, "TET_ROTATION_NORTH");
+                             break;
+    case TET_ROTATION_EAST:  string += sprintf(string, "TET_ROTATION_EAST");
+                             break;
+    case TET_ROTATION_SOUTH: string += sprintf(string, "TET_ROTATION_SOUTH");
+                             break;
+    case TET_ROTATION_WEST:  string += sprintf(string, "TET_ROTATION_WEST");
+                             break;
+    default:                 string += sprintf(string, "TET_ROTATION_UNKNOWN");
+                             break;
+  }
+
+  sprintf(string, "\n");
 }

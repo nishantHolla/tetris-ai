@@ -288,6 +288,7 @@ extern Vector2 tet_ui_next_piece_board;
 extern Vector2 tet_ui_held_piece_board;
 extern Vector2 tet_ui_instructions_text;
 extern Vector2 tet_ui_score_text;
+extern Vector2 tet_ui_stats_text;
 
 // UI Functions
 
@@ -297,6 +298,7 @@ void tet_ui_calculate(const tet_Game *game);
 void tet_ui_draw_text(const tet_Game *game);
 void tet_ui_draw_board(const tet_Game *game);
 void tet_ui_draw_next_and_held_piece(const tet_Game *game);
+void tet_ui_print_piece(const char *pre_text, const tet_Piece *piece, char *string);
 
 // Debug Functions
 
