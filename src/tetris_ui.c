@@ -132,7 +132,7 @@ void tet_ui_draw_text(const tet_Game *game) {
       fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing, TET_UI_TEXT_COLOR);
   DrawTextEx(fonts[0], HELD_PIECE_TITLE, tet_ui_held_piece_text,
       fonts[0].baseSize * TET_FONT_LG.size, TET_FONT_LG.spacing, TET_UI_TEXT_COLOR);
-  DrawTextEx(fonts[0], INSTRUCTIONS, tet_ui_instructions_text,
+  DrawTextEx(fonts[0], AI_IS_PLAYING ? "AI is Playing" : INSTRUCTIONS, tet_ui_instructions_text,
       fonts[0].baseSize * TET_FONT_SM.size, TET_FONT_SM.spacing, TET_UI_TEXT_COLOR);
   char score_text[100];
   snprintf(score_text, 100, "Score: %ld", game->score);
@@ -164,7 +164,7 @@ void tet_ui_draw_board(const tet_Game *game) {
         cell_color = TET_UI_PIECE_COLOR[game->current_piece.index];
       }
       else if (game->board[row][col] != GRID_EMPTY_CELL) {
-        cell_color = TET_UI_PIECE_COLOR[game->current_piece.index];
+        cell_color = TET_UI_PIECE_COLOR[game->board[row][col]];
       }
       DrawRectangleRounded(cell, TET_UI_ROUNDEDNESS_SM, 0, cell_color);
     }

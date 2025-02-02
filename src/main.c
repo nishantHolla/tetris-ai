@@ -16,27 +16,55 @@ int main(void) {
     exit(1);
   }
 
+  double last_call_time = 0;
+  const double last_call_interval = AI_IS_PLAYING ? 0.1 : 0.3;
+
   // Game loop
 
   while (!WindowShouldClose()) {
-    if (IsKeyPressed(KEY_LEFT)) {
-      tet_game_move(&game, TET_MOVE_LEFT);
+
+    double current_time = GetTime();
+    if (!game.is_over && current_time - last_call_time >= last_call_interval) {
+      if (AI_IS_PLAYING) {
+        tet_game_play(&game);
+      }
+      else if (tet_game_move(&game, TET_MOVE_DOWN) != 0) {
+        tet_game_place(&game);
+        tet_game_end_turn(&game);
+      }
+      last_call_time = current_time;
     }
-    else if (IsKeyPressed(KEY_RIGHT)) {
-      tet_game_move(&game, TET_MOVE_RIGHT);
+
+    if (!AI_IS_PLAYING && !game.is_over) {
+      if (IsKeyPressed(KEY_LEFT)) {
+        tet_game_move(&game, TET_MOVE_LEFT);
+      }
+      else if (IsKeyPressed(KEY_RIGHT)) {
+        tet_game_move(&game, TET_MOVE_RIGHT);
+      }
+      else if (IsKeyPressed(KEY_UP)) {
+        tet_game_move(&game, TET_MOVE_ANTI_CLOCKWISE);
+      }
+      else if (IsKeyPressed(KEY_DOWN)) {
+        tet_game_move(&game, TET_MOVE_CLOCKWISE);
+      }
+      else if (IsKeyPressed(KEY_SPACE)) {
+        tet_game_move(&game, TET_MOVE_DROP);
+        tet_game_place(&game);
+        tet_game_end_turn(&game);
+      }
+      else if (IsKeyPressed(KEY_F)) {
+        tet_game_move(&game, TET_MOVE_SWAP);
+      }
     }
-    else if (IsKeyPressed(KEY_UP)) {
-      tet_game_move(&game, TET_MOVE_ANTI_CLOCKWISE);
+
+    if (game.is_over) {
+      if (IsKeyPressed(KEY_R)) {
+        tet_game_init(&game);
+        continue;
+      }
     }
-    else if (IsKeyPressed(KEY_DOWN)) {
-      tet_game_move(&game, TET_MOVE_CLOCKWISE);
-    }
-    else if (IsKeyPressed(KEY_SPACE)) {
-      tet_game_move(&game, TET_MOVE_DROP);
-    }
-    else if (IsKeyPressed(KEY_F)) {
-      tet_game_move(&game, TET_MOVE_SWAP);
-    }
+
     BeginDrawing();
 
     ClearBackground(TET_UI_WINDOW_BG_COLOR);

@@ -2,6 +2,8 @@
 
 // Game Values
 
+bool AI_IS_PLAYING = 1;
+
 const tet_Position START_POSITION = {
   .x = GRID_COL_COUNT / 2 - 1,
   .y = GRID_ROW_COUNT - 4
@@ -458,6 +460,5 @@ void tet_game_play(tet_Game *game) {
 
   tet_game_place(game);
   tet_game_end_turn(game);
-  /*tet_debug_print_game(game, true);*/
   tet_hashmap_free(&map);
 }

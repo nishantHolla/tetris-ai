@@ -149,6 +149,7 @@ typedef struct tet_FontSize {
 
 // Game Values
 
+extern bool AI_IS_PLAYING;
 extern const tet_Position START_POSITION;
 extern const uint16_t TET_PIECE_SHAPE[NUMBER_OF_PIECES][NUMBER_OF_ROTATIONS];
 extern const tet_Coefficient coeff_of_line_clear[5];
