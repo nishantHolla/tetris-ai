@@ -128,3 +128,11 @@ that does not clear a line.<br />
 
 The final score of a move is the sum of the above mentioned parameters multiplied by its weight that
 is determined by genetic algorithm. The move with highest score is selected to be played.
+
+## Scoring system
+
+The following scoring system is adopted in this implementation of tetris
+- 1 line cleared: 100 points
+- 2 line cleared: 300 points
+- 3 line cleared: 500 points
+- 4 line cleared: 800 points
