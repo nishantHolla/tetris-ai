@@ -11,13 +11,13 @@ const tet_Position START_POSITION = {
 };
 
 const uint16_t TET_PIECE_SHAPE[NUMBER_OF_PIECES][NUMBER_OF_ROTATIONS] = {
-  { 0b0000111100000000, 0b0100010001000100, 0b0000000011110000, 0b0010001000100010 }, // TET_PIECE_I
-  { 0b0100011100000000, 0b0010001001100000, 0b0000011100010000, 0b0011001000100000 }, // TET_PIECE_L
-  { 0b0001011100000000, 0b0110001000100000, 0b0000011101000000, 0b0010001000110000 }, // TET_PIECE_LR
-  { 0b0011001100000000, 0b0011001100000000, 0b0011001100000000, 0b0011001100000000 }, // TET_PIECE_O
-  { 0b0110001100000000, 0b0010011001000000, 0b0000011000110000, 0b0001001100100000 }, // TET_PIECE_S
-  { 0b0011011000000000, 0b0100011000100000, 0b0000001101100000, 0b0010001100010000 }, // TET_PIECE_SR
-  { 0b0010011100000000, 0b0010011000100000, 0b0000011100100000, 0b0010001100100000 }, // TET_PIECE_T
+  { 0x0F00, 0x4444, 0x00F0, 0x2222 }, // TET_PIECE_I
+  { 0x4700, 0x2260, 0x0710, 0x3220 }, // TET_PIECE_L
+  { 0x1700, 0x6220, 0x0740, 0x2230 }, // TET_PIECE_LR
+  { 0x3300, 0x3300, 0x3300, 0x3300 }, // TET_PIECE_O
+  { 0x6300, 0x2640, 0x0630, 0x1320 }, // TET_PIECE_S
+  { 0x3600, 0x4620, 0x0360, 0x2310 }, // TET_PIECE_SR
+  { 0x2700, 0x2620, 0x0720, 0x2320 }, // TET_PIECE_T
 };
 
 const tet_Coefficient coeff_of_line_clear[5] = {
@@ -122,6 +122,7 @@ int8_t tet_game_move(tet_Game *game, const tet_Move move) {
     return 1;
   }
 
+  tet_Piece temp;
   switch (move) {
     case TET_MOVE_DOWN:
       game->position.y--;
@@ -144,7 +145,7 @@ int8_t tet_game_move(tet_Game *game, const tet_Move move) {
       }
       break;
     case TET_MOVE_SWAP:
-      tet_Piece temp = game->current_piece;
+      temp = game->current_piece;
       game->has_swapped = true;
 
       if (game->has_held_piece) {

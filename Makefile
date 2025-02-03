@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic -std=c23
+CFLAGS=-Wall -Wextra -pedantic
 DEBUG_FLAGS=-ggdb -fsanitize=address
 RELEASE_FLAGS=-O3
 INCLUDE=-Isrc/include -Isrc/include/raylib
