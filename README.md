@@ -58,7 +58,7 @@ Then build and run with the `--train` flag
 ```
 Once the training is complete, you will see two new files in the root directory: `tetris-ai-train.log` (which is
 the log file of each generation) and `tetris-ai-params.txt` which contains the weights of the best chromosome.<br />
-Run the executable like before to use the new weights
+Build and run the executable like before to use the new weights
 
 - To see the help message run
 ```bash
