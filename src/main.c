@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
   if (AI_IS_PLAYING) {
     FILE *params_file = fopen("./tetris-ai-params.txt", "r");
     if (params_file) {
+      printf("Reading custom parameters\n");
       char line[500];
       if (!fgets(line, 500, params_file)) {
         perror("Error: Failed to read params file.\n");

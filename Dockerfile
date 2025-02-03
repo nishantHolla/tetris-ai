@@ -43,6 +43,14 @@ else \
   make test NAME=$TEST_NAME; \
 fi
 
+RUN if [ -f "./tetris-ai-train-params.txt" ]; then \
+  cp ./tetris-ai-train-params.txt out; \
+fi
+
+RUN if [ -f "./tetris-ai-params.txt" ]; then \
+  cp ./tetris-ai-params.txt out; \
+fi
+
 WORKDIR /app/out
 
 CMD ["./tetris"]

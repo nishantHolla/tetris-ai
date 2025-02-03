@@ -10,7 +10,9 @@ Genetic algorithm (GA) is a metaheuristic inspired by the process of natural sel
 [![Watch the video](./docs/thumb.jpg)](https://vimeo.com/1052779149?share=copy)
 Click the image to view demo video
 
-## Building (Linux and MacOS)
+## Building (Linux)
+
+- Download [Docker](https://www.docker.com/)
 
 - Clone the repository
 
@@ -19,48 +21,48 @@ git clone https://github.com/nishantHolla/tetris-ai
 cd tetris-ai
 ```
 
-- Run make
+- Run the `build.sh` script to build the Docker image
 
 ```bash
-make release
+./build.sh release
 ```
 
-- Execute the program
+- Run the `run.sh` script to run the Docker image
 
 ```bash
-cd out
-./tetris-ai
+./run.sh
 ```
 
 - If you want to play the game insted of the AI, run the executable with the `--no-ai` flag
 
 ```bash
-./tetris-ai --no-ai
+./run.sh --no-ai
 ```
 
 - If you want to run the genetic algorithm with custom parameters, create a file called `tetris-ai-train-params.txt`
-in the directory of the executable with the following numbers separated by space in the first line
+in the root directory with the following numbers separated by space in the first line
     - generation_count (positive integer): Number of generations to train
     - population_size (positive intenger): Size of the population to train
     - games_per_chromosome (positive integer): Number of games to play for each chromosome in the population
     - moves_per_game (positive integer): Maximum number of moves each game should be played for
     - elitism_rate (decimal between 0 and 1): Percentage of the population to be carried over to the next generation
     - mutation_rate (deciaml between 0 and 1): Percentage of population to be mutated in each generation<br />
-For example
+For example:
 ```bash
 100 100 10 5000 0.2 0.4
 ```
-Then run
+Then build and run with the `--train` flag
 ```bash
-./tetris-ai --train
+./build.sh release
+./run.sh --train
 ```
-Once the training is complete, you will see two new files in the current directory: `tetris-ai-train-<timestamp>.log` (which is
+Once the training is complete, you will see two new files in the root directory: `tetris-ai-train.log` (which is
 the log file of each generation) and `tetris-ai-params.txt` which contains the weights of the best chromosome.<br />
 Run the executable like before to use the new weights
 
 - To see the help message run
 ```bash
-./tetris-ai --help
+./run.sh --help
 ```
 
 ## About Genetic Algorithm

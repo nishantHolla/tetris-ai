@@ -71,7 +71,7 @@ int8_t tet_ai_train(tet_TrainParameters train_param) {
   }
 
   char log_file_name[100];
-  snprintf(log_file_name, 100, "tetris-ai-train-%lu.log", (unsigned long)time(NULL));
+  snprintf(log_file_name, 100, "tetris-ai-train.log");
 
   if (tet_ai_init_population(population, &train_param) != 0) {
     printf("Failed to Initializes population\n");
