@@ -46,7 +46,10 @@ int main(int argc, char *argv[]) {
     };
     if (train_params) {
       char line[100];
-      fgets(line, 100, train_params);
+      if (!fgets(line, 100, train_params)) {
+        perror("Error: Failed to read train params file.\n");
+        exit(1);
+      };
       int32_t inputs_read = sscanf(line, "%d %d %d %d %lf %lf",
           &param.generation_count,
           &param.population_size,
@@ -70,7 +73,10 @@ int main(int argc, char *argv[]) {
     FILE *params_file = fopen("./tetris-ai-params.txt", "r");
     if (params_file) {
       char line[500];
-      fgets(line, 500, params_file);
+      if (!fgets(line, 500, params_file)) {
+        perror("Error: Failed to read params file.\n");
+        exit(1);
+      };
       int32_t inputs_read = sscanf(line, "%lf %hhd %lf %hhd %lf %hhd %lf %hhd %lf %hhd %lf %hhd %lf %hhd %lf %hhd",
           &(selected_chromosome.coeff_of_line_clear[0].magnitude),
           &(selected_chromosome.coeff_of_line_clear[0].is_positive),
