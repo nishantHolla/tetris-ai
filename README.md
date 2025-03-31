@@ -7,8 +7,7 @@ Genetic algorithm (GA) is a metaheuristic inspired by the process of natural sel
 
 ## Demo
 
-[![Watch the video](./docs/thumb.jpg)](https://vimeo.com/1052779149?share=copy)
-Click the image to view demo video
+https://github.com/user-attachments/assets/d16feb4f-c829-4afb-b151-e69c9be16164
 
 ## Building (Linux)
 
