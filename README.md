@@ -14,6 +14,13 @@ Click the image to view demo video
 
 - Download [Docker](https://www.docker.com/)
 
+- Run the follwing command to use Docker buildkit and allow X11 forwarding
+
+```bash
+export DOCKER_BUILDKIT=1
+xhost +local:root > /dev/null
+```
+
 - Clone the repository
 
 ```bash
