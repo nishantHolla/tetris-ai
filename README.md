@@ -7,8 +7,7 @@ Genetic algorithm (GA) is a metaheuristic inspired by the process of natural sel
 
 ## Demo
 
-[![Watch the video](./docs/thumb.jpg)](https://vimeo.com/1052779149?share=copy)
-Click the image to view demo video
+https://github.com/user-attachments/assets/d16feb4f-c829-4afb-b151-e69c9be16164
 
 ## Building (Linux)
 
@@ -65,7 +64,7 @@ Then build and run with the `--train` flag
 ```
 Once the training is complete, you will see two new files in the root directory: `tetris-ai-train.log` (which is
 the log file of each generation) and `tetris-ai-params.txt` which contains the weights of the best chromosome.<br />
-Run the executable like before to use the new weights
+Build and run the executable like before to use the new weights
 
 - To see the help message run
 ```bash
